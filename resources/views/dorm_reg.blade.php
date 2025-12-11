@@ -7,11 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href='/css/dorm_reg.css'>
-
-
-    
-    <style>
-    </style>
 </head>
 <body>
     <x-page-header>
@@ -45,7 +40,6 @@
                 </div>
                 <div class="hero-image">
                     <div class="hero-image-wrapper">
-                        {{-- <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600" alt="Professional Property Owner"> --}}
                         <div class="dorm_image"></div>
                     </div>
                 </div>
@@ -177,6 +171,6 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src ="/js/dorm_reg.js">
+    <script src ="/js/dorm_reg.js"></script>
 </body>
 </html>

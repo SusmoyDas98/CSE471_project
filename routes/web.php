@@ -9,3 +9,4 @@ Route::get('/', function () {
 
 Route::view("/dorm_reg", [PageRedirectController::class, "dorm_reg"]);
 Route::view("/find_dorm_mate", [PageRedirectController::class, "find_dorm_mate"]);
+Route::view("/website_feedback", "website_feedback");
