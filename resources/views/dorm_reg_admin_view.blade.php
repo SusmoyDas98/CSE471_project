@@ -33,10 +33,10 @@
 
     <!-- Stats Cards -->
     <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon pending"><i class="fas fa-hourglass-half"></i></div><div class="stat-value">12</div><div class="stat-label">Pending</div></div>
-        <div class="stat-card"><div class="stat-icon approved"><i class="fas fa-check-circle"></i></div><div class="stat-value">45</div><div class="stat-label">Approved</div></div>
-        <div class="stat-card"><div class="stat-icon rejected"><i class="fas fa-times-circle"></i></div><div class="stat-value">8</div><div class="stat-label">Rejected</div></div>
-        <div class="stat-card"><div class="stat-icon total"><i class="fas fa-list"></i></div><div class="stat-value">65</div><div class="stat-label">Total</div></div>
+        <div class="stat-card"><div class="stat-icon pending"><i class="fas fa-hourglass-half"></i></div><div class="stat-value">{{$all_pending}}</div><div class="stat-label">Pending</div></div>
+        <div class="stat-card"><div class="stat-icon approved"><i class="fas fa-check-circle"></i></div><div class="stat-value">{{$all_approved}}</div><div class="stat-label">Approved</div></div>
+        <div class="stat-card"><div class="stat-icon rejected"><i class="fas fa-times-circle"></i></div><div class="stat-value">{{$all_declined}}</div><div class="stat-label">Rejected</div></div>
+        <div class="stat-card"><div class="stat-icon total"><i class="fas fa-list"></i></div><div class="stat-value">{{$total_submissions}}</div><div class="stat-label">Total</div></div>
     </div>
 
     <!-- Filters -->

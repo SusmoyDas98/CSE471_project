@@ -26,8 +26,12 @@ class DormRegistrationController extends Controller
     
 
     public function admin_view(){
-        $all_submissions = Dorm_registration_submission::where('status', 'pending')->get();
-        return view("dorm_reg_admin_view", ["all_submissions" => $all_submissions]);
+        $all_submissions = Dorm_registration_submission::where('status', 'Pending')->get();
+        $all_pending = Dorm_registration_submission::where('status', 'Pending')->count();
+        $total_submissions = Dorm_registration_submission::count();
+        $all_approved = Dorm_registration_submission::where('status', 'Approved')->count();
+        $all_declined = Dorm_registration_submission::where('status', 'Declined')->count();
+        return view("dorm_reg_admin_view", ["all_submissions" => $all_submissions, "all_approved" => $all_approved, 'all_declined' => $all_declined, "total_submissions" => $total_submissions, "all_pending" => $all_pending]);
     }
 
     public function user_view(){
