@@ -8,6 +8,7 @@ use App\Http\Controllers\LandlordDashboardController;
 
 
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -17,8 +18,8 @@ Route::view("/find_dorm_mate", [PageRedirectController::class, "find_dorm_mate"]
 Route::view("/website_feedback", "website_feedback");
 
 // Document upload / dorm registration
-Route::get('/documentInd', [DocumentController::class, 'index'])->name('documents.index');
-Route::post('/documentStore', [DocumentController::class, 'store'])->name('documents.store');
+Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
 
 
 
