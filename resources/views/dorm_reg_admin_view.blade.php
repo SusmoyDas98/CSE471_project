@@ -39,7 +39,7 @@
         <div class="stat-card"><div class="stat-icon total"><i class="fas fa-list"></i></div><div class="stat-value">{{$total_submissions}}</div><div class="stat-label">Total</div></div>
     </div>
 
-    <!-- Filters -->
+    {{-- <!-- Filters -->
     <div class="filters-section">
         <div class="filter-group">
             <label for="statusFilter">Status</label>
@@ -62,7 +62,7 @@
             <input type="text" class="search-input" placeholder="Search...">
             <i class="fas fa-search search-icon"></i>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Submissions Table -->
     <div class="submissions-container">
