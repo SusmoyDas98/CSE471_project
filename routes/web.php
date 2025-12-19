@@ -3,9 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageRedirectController;
 use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandlordDashboardController;
-
+use Illuminate\Http\Request;
+use App\Http\Controllers\DormSeekerDashboardController;
+use App\Http\Controllers\ChatController;
 
 
 
@@ -23,16 +24,35 @@ Route::post('/documents', [DocumentController::class, 'store'])->name('documents
 
 
 
-// Dashboard routes
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-Route::post('/dashboard/{id}/like', [DashboardController::class, 'like'])->name('dashboard.like');
-Route::post('/dashboard/{id}/share', [DashboardController::class, 'share'])->name('dashboard.share');
-
-
 
 
 Route::get('/landlord/dashboard', [LandlordDashboardController::class, 'index']);
+
+
+
+
+Route::get('/dorm-seeker/dashboard', function () {
+    return view('dorm-seeker-dashboard');
+});
+
+Route::get('/dorm-seeker/dashboard', [DormSeekerDashboardController::class, 'index']);
+
+
+Route::get('/documents/test', function () {
+    return view('document');
+});
+
+Route::post('/documents/test', [DocumentController::class, 'store'])
+    ->name('documents.store');
+
+
+
+
+
+Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+Route::get('/chat/{user}', [ChatController::class, 'show'])->name('chat.show');
+Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
+
 
 
 
