@@ -229,14 +229,14 @@ async function activateAIMode(user_id) {
                 <div class="common-section mb-3">
                     <strong>Common Hobbies:</strong>
                     <div class="d-flex flex-wrap mt-1">
-                        ${match.common_hobbies.join(",")}
+                        ${match.common_hobbies}
                     </div>
                 </div>
                 
                 <div class="common-section mb-4">
                     <strong>Common Preferences:</strong>
                     <div class="d-flex flex-wrap mt-1">
-                        ${match.common_preferences.join(",")}
+                        ${match.common_preferences}
                     </div>
                 </div>
                 

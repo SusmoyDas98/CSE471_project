@@ -31,11 +31,14 @@ class auto_suggestion_controller_api extends Controller
             'hobbies' => json_decode($mine_user->hobbies ?? '[]', true),
             'study_level' => $mine_user->study_level ?? "",
             'gender' => $mine_user->gender ?? "",
+            'dorm_id' => $mine_user->dorm_id ?? "",
+
             'age' => $mine_user->age ?? null
         ];
 
         $total_possible_score = count($mine_preferences['preferences'] ?? [])
                               + count($mine_preferences['hobbies'] ?? [])
+                              + 1
                               + 1
                               + 1
                               + 1;
@@ -55,6 +58,10 @@ class auto_suggestion_controller_api extends Controller
             if (($mine_preferences['study_level'] ?? "") === ($other_user->study_level ?? "")) {
                 $matching_score += 1;
             }
+            if (($mine_preferences['dorm_id'] ?? "") === ($other_user->dorm_id ?? "")) {
+                $matching_score += 1;
+            }
+            
 
             if (($mine_preferences['gender'] ?? "") === ($other_user->gender ?? "")) {
                 $matching_score += 1;
