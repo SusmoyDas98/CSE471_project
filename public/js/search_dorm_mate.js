@@ -100,14 +100,14 @@ async function filter_users(user_id){
                 </div>                
 
                 <div class="common-section mb-3">
-                    <strong>Common Hobbies:</strong>
+                    <strong>Hobbies:</strong>
                     <div class="d-flex flex-wrap mt-1">
                         ${match.common_hobbies.join(",")}
                     </div>
                 </div>
                 
                 <div class="common-section mb-4">
-                    <strong>Common Preferences:</strong>
+                    <strong>Preferences:</strong>
                     <div class="d-flex flex-wrap mt-1">
                         ${match.common_preferences.join(",")}
                     </div>
