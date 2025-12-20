@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User_Preferences;
 use App\Models\User;
+use Illuminate\Validation\Rules\Unique;
+use PhpParser\Node\Stmt\ElseIf_;
+use App\Models\Dorm;
+
+use function PHPUnit\Framework\isEmpty;
 
 class auto_suggestion_controller_api extends Controller
 {
@@ -62,15 +67,17 @@ class auto_suggestion_controller_api extends Controller
             }
 
             $final_score = ($matching_score * 100) / $total_possible_score;
-            $other_user_personal_info = User::select('name', 'email')->where('id', $other_user->user_id)->first();
             return [
-                "name" => $other_user_personal_info->name ?? "",
-                "email" => $other_user_personal_info->email ?? "",
-                'user_id' => $other_user->user_id,
+                "name" => $other_user->user_name ?? "",
+                "email" => $other_user->user_email ?? "",
                 'matching_percentage' => $final_score,
+                'user_id' => $other_user->user_id,
+                'dorm' => $other_user->dorm_name ?? null,
+                "age"=>$other_user->age,
+                "gender"=>$other_user->gender,
                 'common_hobbies' => $common_hobbies,
-                'common_preferences' => $common_preferences
-            ];
+                'common_preferences' =>$common_preferences
+            ];            
 
         })->sortByDesc('matching_percentage')->values();
 
@@ -87,4 +94,113 @@ class auto_suggestion_controller_api extends Controller
 
         return response()->json($best_matches);
     }
+
+
+
+    public function fetch_filtered_dorm_mate(Request $request, $user_id)
+    {
+        $all_user_except_mine_infos = User_Preferences::where("user_id", "!=", $user_id)->get();
+
+        $name = $request->query('name');
+        $min_age = $request->query('min_age');
+        $max_age = $request->query('max_age');
+        $gender =  $request->query('gender');
+        $dorm_id = $request->query("dorm_id");
+
+        // $filter_nums = count(collect([$min_age, $max_age, $gender, $dorm_id])->filter(function($items){
+        //     return !empty($items);
+        //         }));
+        
+        $filters = collect([
+                            "name" => $name,
+                            "min_age" => $min_age,
+                            "max_age" => $max_age,
+                            "gender"  => $gender,
+                            "dorm_id" => $dorm_id
+                        ]);
+
+
+        $best_matches =  $all_user_except_mine_infos->map(function($other_user) use ($name, $min_age ,$max_age ,$gender ,$dorm_id, $filters){
+            $selected_id = [];
+            $true_checker = $filters->map(function ($items) { return false;});
+
+            if (!empty($filters["min_age"]) || !empty($filters["max_age"])){
+                if($min_age!==null && $max_age!==null){
+                    if ($min_age <= $other_user['age'] && $other_user['age']  <= $max_age){
+                        $selected_id[] = $other_user["user_id"]; 
+                        $true_checker["min_age"] = true;
+                        $true_checker["max_age"] = true;
+
+                    }
+
+                }
+                elseif($min_age!==null && $max_age === null){
+                    if ($min_age <= $other_user['age']){
+                        $selected_id[] = $other_user["user_id"]; 
+                        $true_checker["min_age"] = true;
+                        
+                    }
+                }
+                elseif($min_age===null && $max_age !== null){
+                    if ($max_age >= $other_user['age']){
+                        $selected_id[] = $other_user["user_id"]; 
+                        $true_checker["max_age"] = true;
+                    }            
+                }}
+
+            if (!empty($filters["name"]) && strpos(strtolower($other_user['user_name']), strtolower($name)) !== false) {
+                $selected_id[] = $other_user["user_id"];
+                $true_checker["name"] = true;
+            }
+
+
+            if(!empty($filters["gender"])  && $gender === $other_user['gender']){
+                    $selected_id[] = $other_user["user_id"]; 
+                    $true_checker["gender"] = true;
+
+            }
+            if(!empty($filters["dorm_id"])  && $dorm_id == $other_user['dorm_id']){
+                    $selected_id[] = $other_user["user_id"]; 
+                    $true_checker["dorm_id"] = true;
+
+            }            
+
+            $selected_id = array_unique($selected_id);
+
+            $filter_trues =  $filters->filter(function($vals){
+                return $vals !== null && $vals !== "";
+            });
+            $checker_trues =  $true_checker->filter(function($vals){
+                return $vals === true;
+            });
+
+            $verdict = ($filter_trues->keys()->all() === $checker_trues->keys()->all() ? true : false );
+
+            if(count($selected_id)>0 && $verdict === true){
+
+            // $other_user_personal_info = User::select('name', 'email')->where('id', $other_user->user_id)->first();            
+            // $dorm_info = Dorm::select('name')->where('id', $other_user->dorm_id)->first();                        
+            // dd($other_user->dorm_id);
+            return [
+                "name" => $other_user->user_name ?? "",
+                "email" => $other_user->user_email ?? "",
+                'user_id' => $other_user->user_id,
+                'dorm' => $other_user->dorm_name ?? null,
+                "age"=>$other_user->age,
+                "gender"=>$other_user->gender,
+                'common_hobbies' =>json_decode($other_user->hobbies),
+                'common_preferences' => json_decode($other_user->preferences)
+            ];}
+            else{
+                return [];
+            }
+        })->filter(function($item){
+            return !empty($item);
+        });
+
+
+        return response()->json($best_matches->values());
+
+
+}
 }
