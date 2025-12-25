@@ -16,13 +16,24 @@ class Website_review_controller extends Controller
     public function index()
     {
         //
+        $user_role = "Admin";
         $all_reviews = Website_Reviews::orderBy('created_at', 'desc')->get();
+        $vissible_reviews = $all_reviews->whereNotIn('label', ['Hidden', "Deleted"]);
+        $total_reviews = $all_reviews->count();
+        $hidden_reviews = $all_reviews->where('label', 'Hidden')->pluck('id')->toArray();
+        // $total_hidden_reviews = count($hidden_reviews);
+        $deleted_reviews = $all_reviews->where('label','Deleted')->pluck('id')->toArray();
+        // $total_deleted_reviews = $deleted_reviews->count();
+        $average_rating = round($all_reviews->avg('rating'),2);
+        if ($user_role == "Admin") {
+            return view("website_feedback_admin_view", ['all_reviews'=>$all_reviews, 'user_role'=>$user_role, 'total_reviews'=>$total_reviews, 'hidden_reviews'=>$hidden_reviews, 'deleted_reviews'=>$deleted_reviews, 'average_rating'=>$average_rating]);
+        }
         $user_id = 19;
         if (Website_Reviews::where('user_id', $user_id)->exists()) {
-            return view("website_feedback", ['already_have'=> 'You have already submitted a review. Thank you for your Participation 😃!','all_reviews'=>$all_reviews]);
+            return view("website_feedback", [ 'user_role'=>$user_role,'already_have'=> 'You have already submitted a review. Thank you for your Participation 😃!','all_reviews'=>$vissible_reviews,'total_reviews'=>$total_reviews, 'hidden_reviews'=>$hidden_reviews, 'deleted_reviews'=>$deleted_reviews, 'average_rating'=>$average_rating]);
         }
         else{
-            return view("website_feedback", ['all_reviews'=>$all_reviews]); 
+            return view("website_feedback", [ 'user_role'=>$user_role,'all_reviews'=>$vissible_reviews]); 
         }
        }
 

@@ -36,6 +36,8 @@ Route::get('/submitted_dorm/{id}', [DormRegistrationController::class, 'submitte
 Route::resource('dorm_registration', DormRegistrationController::class);
 Route::resource('website_reviews', Website_review_controller::class);
 
+Route::resource('website_feedback_admin_view', Website_review_controller::class);
+
 // profile_visiting urls:
 // Route::view('/user_profile','user_profile')->name('user_profile');
 Route::get('/user_profile/{id}', [PageRedirectController::class, 'user_profile']);
