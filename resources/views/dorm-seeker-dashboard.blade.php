@@ -34,6 +34,7 @@
     const dormData = @json($dormData);
     const latestPost = @json($latestPost);
     const userName = @json($userName);
+    const holidays = [];
         
 
         
@@ -79,7 +80,7 @@
                 
                 mainContent.innerHTML = `
                     <div class="dashboard-header">
-                        <h1>Welcome back, {{ $userName }}!</h1>
+                        <h1>Welcome back, ${userName}!</h1>
                         <p>Here's your rental overview and latest community updates</p>
                     </div>
                     
@@ -201,6 +202,30 @@
                             <p>Browse all posts and discussions</p>
                         </div>
                     </div>
+
+                    <!-- 📅 Calendar Section -->
+                    <div class="rental-info-card" style="margin-top: 30px;">
+                        <h2 class="property-name mb-3">📅 Calendar Preview</h2>
+                        <p class="text-muted mb-3">
+                            External calendar API integration (demo)
+                        </p>
+
+                        ${
+                            holidays.length === 0
+                            ? `<p class="text-danger">Calendar data unavailable.</p>`
+                            : `
+                                <ul class="list-group">
+                                    ${holidays.map(h => `
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>${h.name}</span>
+                                            <span class="badge bg-primary">${h.date}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            `
+                        }
+                    </div>
+
                 `;
             }
         }
