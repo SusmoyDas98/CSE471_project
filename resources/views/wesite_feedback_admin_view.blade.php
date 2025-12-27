@@ -78,7 +78,7 @@
                         </div>
                         <div class="review-rating">
                             @for ( $i = 1; $i<=$review->rating; $i++)
-                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i>
                             @endfor
                             
                         </div>

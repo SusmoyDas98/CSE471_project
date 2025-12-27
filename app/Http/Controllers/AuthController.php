@@ -24,8 +24,17 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:Dorm Seeker,Dorm Owner,Admin',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^\S+$/',
+            ],
+            'role' => 'required|in:Dorm Seeker,Dorm Owner',
+        ],
+        [
+            'password.regex' => 'Password must not contain spaces.',
         ]);
 
         if ($validator->fails()) {
@@ -58,8 +67,7 @@ class AuthController extends Controller
         }
 
         if (is_null($mappedRole)) {
-            Log::warning('Unrecognized role submitted during registration', ['role' => $request->role]);
-            $mappedRole = 'Dorm Seeker';
+            return back()->withErrors(['role' => 'The selected role is invalid.'])->withInput();
         }
 
         $user = User::create([
@@ -107,35 +115,4 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Logged out successfully!');
     }
 
-    // Redirect to Google
-    public function redirectToGoogle()
-    {
-        return Socialite::driver('google')->redirect();
-    }
-
-    // Handle Google callback
-    public function handleGoogleCallback()
-    {
-        try {
-            $googleUser = Socialite::driver('google')->user();
-            
-            $user = User::where('email', $googleUser->getEmail())->first();
-
-            if ($user) {
-                Auth::login($user);
-            } else {
-                $user = User::create([
-                    'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'password' => Hash::make(uniqid()),
-                    'role' => 'Dorm Seeker',
-                ]);
-                Auth::login($user);
-            }
-
-            return redirect()->route('dashboard')->with('success', 'Login successful!');
-        } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Google authentication failed!');
-        }
-    }
 }

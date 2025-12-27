@@ -1,133 +1,272 @@
-    let isAIMode = false;
-        
-        // Sample data for demonstration
-        const sampleProfiles = [
-            {
-                name: "Sarah Johnson",
-                age: 20,
-                major: "Computer Science",
-                year: "Sophomore",
-                interests: ["Gaming", "Coding", "Anime", "Music"],
-                bio: "Tech enthusiast looking for a quiet study buddy who also loves late-night gaming sessions!",
-                matchScore: 95,
-                aiMatch: true
-            },
-            {
-                name: "Emily Chen",
-                age: 21,
-                major: "Business Administration",
-                year: "Junior",
-                interests: ["Fitness", "Travel", "Photography", "Cooking"],
-                bio: "Early bird who loves staying active. Looking for someone who values a clean space and good vibes.",
-                matchScore: 88,
-                aiMatch: true
-            },
-            {
-                name: "Jessica Martinez",
-                age: 19,
-                major: "Psychology",
-                year: "Freshman",
-                interests: ["Reading", "Art", "Coffee", "Music"],
-                bio: "Creative soul who loves quiet evenings with a good book and coffee. Seeking a respectful roommate.",
-                matchScore: 82,
-                aiMatch: false
-            },
-            {
-                name: "Amanda Lee",
-                age: 22,
-                major: "Engineering",
-                year: "Senior",
-                interests: ["Sports", "Movies", "Gaming", "Tech"],
-                bio: "Friendly and outgoing engineering student. Love watching sports and having movie nights!",
-                matchScore: 79,
-                aiMatch: false
-            }
-        ];
-        
-        function performManualSearch() {
-            const searchQuery = document.getElementById('manualSearch').value;
-            if (!searchQuery.trim()) {
-                alert('Please enter a search term');
-                return;
-            }
-            
-            isAIMode = false;
-            showResults('Manual Search Results', sampleProfiles.filter(p => !p.aiMatch));
-        }
-        
-        function activateAIMode() {
-            isAIMode = true;
-            const resultsContainer = document.getElementById('resultsContainer');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const roommateGrid = document.getElementById('roommateGrid');
-            
-            resultsContainer.style.display = 'block';
-            loadingSpinner.style.display = 'block';
-            roommateGrid.innerHTML = '';
-            
-            // Scroll to results
-            resultsContainer.scrollIntoView({ behavior: 'smooth' });
-            
-            // Simulate AI processing
-            setTimeout(() => {
-                loadingSpinner.style.display = 'none';
-                showResults('AI Recommended Matches', sampleProfiles.filter(p => p.aiMatch));
-            }, 2000);
-        }
-        
-        function showResults(title, profiles) {
-            const resultsContainer = document.getElementById('resultsContainer');
-            const resultsTitle = document.getElementById('resultsTitle');
-            const roommateGrid = document.getElementById('roommateGrid');
-            
-            resultsTitle.textContent = title;
-            resultsContainer.style.display = 'block';
-            
-            roommateGrid.innerHTML = profiles.map((profile, index) => `
-                <div class="roommate-card">
-                    ${isAIMode && profile.aiMatch ? `<div class="ai-match-badge"><i class="fas fa-star me-1"></i>AI Match</div>` : ''}
-                    <div class="profile-header">
-                        <div class="profile-avatar">${profile.name.charAt(0)}</div>
-                        <div class="profile-info">
-                            <h4>${profile.name}</h4>
-                            <div class="profile-meta">
-                                <span><i class="fas fa-graduation-cap me-1"></i>${profile.major}</span>
-                                <span><i class="fas fa-calendar me-1"></i>${profile.year}</span>
-                            </div>
-                            ${isAIMode && profile.aiMatch ? `<span class="match-score"><i class="fas fa-heart me-1"></i>${profile.matchScore}% Match</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="interests">
-                        ${profile.interests.map(interest => `<span class="interest-tag"><i class="fas fa-tag me-1"></i>${interest}</span>`).join('')}
-                    </div>
-                    <p class="profile-bio">${profile.bio}</p>
-                    <div class="card-actions">
-                        <button class="btn-request" onclick="sendRequest('${profile.name}')">
-                            <i class="fas fa-user-plus me-2"></i>Send Request
-                        </button>
-                        <button class="btn-message" onclick="sendMessage('${profile.name}')">
-                            <i class="fas fa-comment me-2"></i>Message
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Scroll to results
-            resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        
-        function sendRequest(name) {
-            alert(`Roommate request sent to ${name}!`);
-        }
-        
-        function sendMessage(name) {
-            alert(`Opening message conversation with ${name}...`);
-        }
-        
-        // Allow Enter key to trigger search
-        document.getElementById('manualSearch').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                performManualSearch();
+document.addEventListener("click", function(e) {
+    if (e.target.closest(".btn-ai-mode")) {
+        const button = e.target.closest(".btn-ai-mode");
+        const user_id = button.dataset.userId;
+        console.log("AI button clicked! user_id =", user_id); 
+
+        activateAIMode(user_id);
+        const target = document.getElementById("come_here");
+        if(target){
+            target.scrollIntoView({ behavior: "smooth" });
+        }        
+    }
+});
+
+document.addEventListener("click", function(e){
+    if(e.target.closest('#apply_search_btn')){
+        const button = e.target.closest("#apply_search_btn");
+        const user_id  =  button.dataset.userId;
+        console.log("search button clicked");
+        filter_users(user_id);
+        const target = document.getElementById("come_here");
+        if(target){
+            target.scrollIntoView({ behavior: "smooth" });
+        }        
+    }
+    if(e.target.closest('#apply_filter_btn')){
+        const button = e.target.closest("#apply_filter_btn");
+        const user_id  =  button.dataset.userId;
+        console.log("filter button clicked");
+        filter_users(user_id);
+        const target = document.getElementById("come_here");
+        if(target){
+            target.scrollIntoView({ behavior: "smooth" });
+        }        
+    }    
+});
+
+async function filter_users(user_id){
+    console.log("filter_user function called");
+    const name = document.getElementById("manualSearch")?.value ?? "" ;
+    const min_age = document.getElementById("filterAgeMin")?.value ?? "" ;
+    const max_age = document.getElementById("filterAgeMax")?.value ?? "" ;
+    const gender =  document.getElementById("filterGender")?.value ?? "" ;
+    const dorm_id = document.getElementById('filterDorm')?.value ?? "" ;
+    const filter_values = {'min_age':min_age, "max_age":max_age, "gender":gender, "dorm_id":dorm_id, "name":name};
+    const params = new URLSearchParams(filter_values).toString();
+      try {
+        console.log('calling the api');
+        const response = await fetch(`/api/get_filtered_suggestions_dorm_mate/${user_id}?${params}`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
             }
         });
-    
+
+        if (!response.ok) {
+            console.log('error detected');
+            const errorData = await response.json();
+            console.log(errorData.message);
+            throw new Error(errorData.message || "Something went wrong");
+        }
+        console.log('called success the api');
+
+        const best_matches = await response.json();
+        console.log(best_matches);
+        console.log(best_matches.length);
+
+        const roommate_show_place = document.querySelector(".results-container");
+        console.log(roommate_show_place);
+
+        if (best_matches.length > 0) {
+            roommate_show_place.innerHTML = `
+            `;
+        roommate_show_place.innerHTML = best_matches.map(match => `
+            <div class="suggested_roommate card p-3 mb-4 shadow-sm d-flex flex-column" id="come_here">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="dorm_mate_name mb-0"><a id="id-hyperlink" href = '/user_profile/${match.user_id}' target='_blank'>${match.name}</a></h5>
+                </div>
+                <div class="dorm_mate_email text-secondary mb-2">
+                    <i class="fas fa-envelope me-1"></i>${match.email}
+                </div>
+                <div class="common-section mb-0">
+                    <i class="fa-solid fa-house me-1"></i>
+                    <span class="dorm"><strong>${match.dorm}</strong></span>
+                </div>
+
+                <hr>
+                
+                <div class="common-section mb-1">
+                    <strong>Age:</strong>
+                    
+                        ${match.age}
+                    
+                </div>                
+
+                <div class="common-section mb-2">
+                    <strong>Gender:</strong>
+                        ${match.gender}
+                    
+                </div>                
+
+                <div class="common-section mb-3">
+                    <strong>Hobbies:</strong>
+                    <div class="d-flex flex-wrap mt-1">
+                        ${match.common_hobbies.join(",")}
+                    </div>
+                </div>
+                
+                <div class="common-section mb-4">
+                    <strong>Preferences:</strong>
+                    <div class="d-flex flex-wrap mt-1">
+                        ${match.common_preferences.join(",")}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm">Chat</button>
+                </div>
+            </div>
+        `).join('');
+
+        } else {
+            roommate_show_place.innerHTML = `
+                <div class="suggested_roommate" id="dorm_mate_found_none">
+                    No matches found. 
+                </div>
+            `;
+        }
+       console.log("try block ends here");
+
+
+    }catch (error) {
+        const roommate_show_place = document.querySelector(".results-container");
+        roommate_show_place.innerHTML = `
+            <div class="suggested_roommate" id="dorm_mate_not_found">
+                Something went wrong, please try again.
+            </div>
+        `;
+       console.log("catch block ends here");
+
+        console.error(error);
+    }
+}
+
+async function activateAIMode(user_id) {
+    console.log("activate-ai function called");
+    try {
+        const response = await fetch(`/api/get_auto_suggestions_dorm_mate/${user_id}`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log(errorData.message);
+            throw new Error(errorData.message || "Something went wrong");
+        }
+
+        const best_matches = await response.json();
+        console.log(best_matches);
+        console.log(best_matches.length);
+
+        const roommate_show_place = document.querySelector(".results-container");
+        console.log(roommate_show_place);
+
+        if (best_matches.length > 0) {
+            roommate_show_place.innerHTML = `
+            `;
+        // roommate_show_place.innerHTML = best_matches.map(match => `
+        //     <div class="suggested_roommate card p-3 mb-4 shadow-sm d-flex flex-column" id="dorm_mate_found">
+        //         <div class="d-flex justify-content-between align-items-center mb-2">
+        //             <h5 class="dorm_mate_name mb-0"><a id="id-hyperlink" href = '/user_profile/${match.user_id}' target='_blank'>${match.name}</a></h5>
+        //             <span class="badge bg-success dorm_mate_percentage">${match.matching_percentage.toFixed(0)}%</span>
+        //         </div>
+        //         <div class="dorm_mate_email text-secondary mb-2">
+        //             <i class="fas fa-envelope me-1"></i>${match.email}
+        //         </div>
+                
+        //         <div class="common-section mb-2">
+        //             <strong>Common Hobbies:</strong>
+        //             <div class="d-flex flex-wrap mt-1">
+        //                 ${match.common_hobbies}
+        //             </div>
+        //         </div>
+                
+        //         <div class="common-section mb-3">
+        //             <strong>Common Preferences:</strong>
+        //             <div class="d-flex flex-wrap mt-1">
+        //                 ${match.common_preferences}
+        //             </div>
+        //         </div>
+                
+        //         <div class="d-flex justify-content-end">
+        //             <button class="btn btn-primary btn-sm">Chat</button>
+        //         </div>
+        //     </div>
+        // `).join('');
+        roommate_show_place.innerHTML = best_matches.map(match => `
+            <div class="suggested_roommate card p-3 mb-4 shadow-sm d-flex flex-column" id="dorm_mate_found">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="dorm_mate_name mb-0"><a id="id-hyperlink" href = '/user_profile/${match.user_id}' target='_blank'>${match.name}</a></h5>
+                    <span class="badge bg-success dorm_mate_percentage">${match.matching_percentage.toFixed(0)}%</span>
+                </div>
+                <div class="dorm_mate_email text-secondary mb-2">
+                    <i class="fas fa-envelope me-1"></i>${match.email}
+                </div>
+                <div class="common-section mb-0">
+                    <i class="fa-solid fa-house me-1"></i>
+                    <span class="dorm"><strong>${match.dorm}</strong></span>
+                </div>
+
+                <hr>
+                
+                <div class="common-section mb-1">
+                    <strong>Age:</strong>
+                    
+                        ${match.age}
+                    
+                </div>                
+
+                <div class="common-section mb-2">
+                    <strong>Gender:</strong>
+                        ${match.gender}
+                    
+                </div>                
+
+                <div class="common-section mb-3">
+                    <strong>Common Hobbies:</strong>
+                    <div class="d-flex flex-wrap mt-1">
+                        ${match.common_hobbies}
+                    </div>
+                </div>
+                
+                <div class="common-section mb-4">
+                    <strong>Common Preferences:</strong>
+                    <div class="d-flex flex-wrap mt-1">
+                        ${match.common_preferences}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary btn-sm">Chat</button>
+                </div>
+            </div>
+        `).join('');        
+
+        } else {
+            roommate_show_place.innerHTML = `
+                <div class="suggested_roommate" id="dorm_mate_found_none">
+                    No matches found. Please update your profile for better suggestions.
+                </div>
+            `;
+        }
+       console.log("try block ends here");
+
+
+    } catch (error) {
+        const roommate_show_place = document.querySelector(".results-container");
+        roommate_show_place.innerHTML = `
+            <div class="suggested_roommate" id="dorm_mate_not_found">
+                Something went wrong, please try again.
+            </div>
+        `;
+       console.log("catch block ends here");
+
+        console.error(error);
+    }
+}
+
+

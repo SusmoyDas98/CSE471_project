@@ -47,12 +47,18 @@
         </div>
         
         <div class="form-container">
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
+                </div>
+            @else 
             <div class="form-header">
                 <h2>Register Your Property</h2>
                 <p>Complete the form below to list your premium dorm on our platform</p>
             </div>
             
-            <form id="dormRegistrationForm" method="POST" action="/register-dorm" enctype="multipart/form-data">
+            <form id="dormRegistrationForm" method="POST" action="/dorm_registration" enctype="multipart/form-data">
+                @csrf
                 <!-- Owner Information -->
                 <div class="form-section">
                     <div class="section-title">
@@ -82,13 +88,17 @@
                             <label for="dormName" class="form-label">Property Name *</label>
                             <input type="text" class="form-control" id="dormName" name="dorm_name" placeholder="Enter your property's name" required>
                         </div>
+                        <div class="col-md-12 mb-4">
+                            <label for="dormLocation" class="form-label">Location *</label>
+                            <input type="text" class="form-control" id="dormLocation" name="dorm_location" placeholder="City, street, or landmark" required>
+                        </div>
                         <div class="col-md-6 mb-4">
                             <label for="numRooms" class="form-label">Available Rooms *</label>
                             <input type="number" class="form-control" id="numRooms" name="num_rooms" placeholder="e.g., 25" min="1" required>
                         </div>
                         <div class="col-md-6 mb-4">
                             <label for="roomTypes" class="form-label">Room Categories *</label>
-                            <input type="text" class="form-control" id="roomTypes" name="room_types" placeholder="Single, Double, Suite, Deluxe" required>
+                            <input type="text" class="form-control" id="roomTypes" name="room_types[]" placeholder="Single, Double, Suite, Deluxe" required>
                             <small class="text-muted">Separate categories with commas</small>
                         </div>
                     </div>
@@ -167,6 +177,7 @@
                     <p><i class="fas fa-lock me-2"></i>Your information is secure and will be verified within 24-48 hours</p>
                 </div>
             </form>
+            @endif
         </div>
     </div>
     

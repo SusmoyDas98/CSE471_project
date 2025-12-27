@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - DormMate</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -66,20 +68,17 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">DormMate</a>
-            <div class="d-flex">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-danger">
-                        <i class="fas fa-sign-out-alt me-2"></i>Logout
-                    </button>
-                </form>
-            </div>
-        </div>
-    </nav>
-    
+
+    {{-- Page Header + Nav (same as show & index) --}}
+    <x-page-header>
+        <x-slot name="nav_links">
+            <x-nav-buttons />
+        </x-slot>
+    </x-page-header>
+
+    {{-- Spacer for fixed navbar --}}
+    <div style="height: 120px;"></div>
+
     <div class="dashboard-container">
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -93,20 +92,75 @@
         <div class="row">
             <div class="col-md-6 mb-4">
                 <div class="card p-4">
-                    <h3><i class="fas fa-building text-primary me-2"></i>Browse Dorms</h3>
+                    <h3>
+                        <i class="fas fa-building text-primary me-2"></i>Browse Dorms
+                    </h3>
                     <p>Explore available dorms and read reviews from other students</p>
-                    <a href="{{ route('dorms.index') }}" class="btn btn-primary">View Dorms</a>
+                    <a href="{{ route('dorms.index') }}" class="btn btn-primary">
+                        View Dorms
+                    </a>
                 </div>
             </div>
             
+<div class="col-md-6 mb-4">
+    <div class="card p-4">
+        <h3><i class="fas fa-search text-primary me-2"></i>Search Dorms</h3>
+        <p>Find your perfect dorm with manual or AI-powered search</p>
+        <a href="{{ route('dorms.search') }}" class="btn btn-primary">Start Searching</a>
+    </div>
+</div>
+
+
+            @if(Auth::user()->role === 'Dorm Seeker')
+                <div class="col-md-6 mb-4">
+                    <div class="card p-4">
+                        <h3><i class="fas fa-file-alt text-primary me-2"></i>My Applications</h3>
+                        <p>View and track your dorm applications</p>
+                        <a href="{{ route('applications.my') }}" class="btn btn-primary">View Applications</a>
+                    </div>
+                </div>
+            @endif
+            
+            @if(Auth::user()->role === 'Dorm Owner')
+                <div class="col-md-6 mb-4">
+                    <div class="card p-4">
+                        <h3><i class="fas fa-plus-circle text-primary me-2"></i>Register Dorm</h3>
+                        <p>List your dorm on the platform</p>
+                        <a href="{{ route('dorm.register') }}" class="btn btn-primary">Register Dorm</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card p-4">
+                        <h3><i class="fas fa-inbox text-primary me-2"></i>Applications</h3>
+                        <p>View applications from dorm seekers</p>
+                        <a href="{{ route('applications.received') }}" class="btn btn-primary">View Applications</a>
+                    </div>
+                </div>
+            @endif
+            
+            @if(Auth::user()->role === 'Admin')
+                <div class="col-md-6 mb-4">
+                    <div class="card p-4">
+                        <h3><i class="fas fa-tasks text-primary me-2"></i>Pending Dorms</h3>
+                        <p>Review and approve dorm registrations</p>
+                        <a href="{{ route('admin.pending.dorms') }}" class="btn btn-primary">Review Dorms</a>
+                    </div>
+                </div>
+            @endif
+            
             <div class="col-md-6 mb-4">
                 <div class="card p-4">
-                    <h3><i class="fas fa-user text-primary me-2"></i>Your Profile</h3>
+                    <h3>
+                        <i class="fas fa-user text-primary me-2"></i>Your Profile
+                    </h3>
                     <p>Email: {{ Auth::user()->email }}</p>
-                    <p>Role: {{ ucfirst(Auth::user()->role) }}</p>
+                    <p>Role: {{ Auth::user()->role }}</p>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

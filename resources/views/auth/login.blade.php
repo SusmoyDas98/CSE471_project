@@ -157,8 +157,28 @@
                 
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+
+                    <div class="position-relative">
+                        <input type="password"
+                            class="form-control pe-5 password-toggle-input"
+                            id="password"
+                            name="password"
+                            required>
+
+                        <span class="password-toggle-icon"
+                            style="
+                                position:absolute;
+                                top:50%;
+                                right:16px;
+                                transform:translateY(-50%);
+                                cursor:pointer;
+                                display:none;
+                                color:#000;">
+                            <i class="fa-regular fa-eye"></i>
+                        </span>
+                    </div>
                 </div>
+
                 
                 <div class="mb-4 form-check">
                     <input type="checkbox" class="form-check-input" id="remember" name="remember">
@@ -183,5 +203,38 @@
             </p>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.password-toggle-input').forEach(input => {
+            const wrapper = input.parentElement;
+            const toggle = wrapper.querySelector('.password-toggle-icon');
+            const icon = toggle.querySelector('i');
+
+            input.addEventListener('input', () => {
+                if (input.value.length > 0) {
+                    toggle.style.display = 'block';
+                } else {
+                    toggle.style.display = 'none';
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+
+            toggle.addEventListener('click', () => {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    </script>
+
+
 </body>
 </html>
