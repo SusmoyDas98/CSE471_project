@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->text('message')->nullable();
             $table->integer('rating')->nullable()->check('rating BETWEEN 1 AND 5');
             $table->string('label')->nullable();
+            $table->timestamp('label_markerd_at')->nullable();
             $table->timestamps();
         });
     }

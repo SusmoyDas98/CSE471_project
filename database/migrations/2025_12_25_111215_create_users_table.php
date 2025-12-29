@@ -10,13 +10,13 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['Dorm Seeker','Dorm Owner']);
+            $table->enum('role', ["Admin",'Dorm Seeker','Dorm Owner'])->nullable();
             $table->enum('subscription_type', ['Free','Paid'])->default('Free');
             $table->timestamps();
         });
     }
 
-    public function down(): void {
+    public function down(): void { 
         Schema::dropIfExists('users');
     }
 };
