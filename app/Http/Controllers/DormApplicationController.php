@@ -12,9 +12,9 @@ class DormApplicationController extends Controller
     // Show application form
     public function create($dormId)
     {
-        $dorm = DB::table('dorm')->where('id', $dormId)->first();
+        $dorms = DB::table('dorms')->where('id', $dormId)->first();
 
-        if (!$dorm) {
+        if (!$dorms) {
             return redirect()->route('dorms.index')->with('error', 'Dorm not found');
         }
 
@@ -28,7 +28,7 @@ class DormApplicationController extends Controller
             return back()->with('error', 'You have already applied to this dorm');
         }
 
-        return view('dorms.apply', compact('dorm'));
+        return view('dorms.apply', compact('dorms'));
     }
 
     // Submit application
@@ -38,9 +38,9 @@ class DormApplicationController extends Controller
             'message' => 'required|string|max:1000',
         ]);
 
-        $dorm = DB::table('dorm')->where('id', $dormId)->first();
+        $dorms = DB::table('dorms')->where('id', $dormId)->first();
 
-        if (!$dorm) {
+        if (!$dorms) {
             return redirect()->route('dorms.index')->with('error', 'Dorm not found');
         }
 
@@ -70,7 +70,7 @@ class DormApplicationController extends Controller
             'user_id' => $dorm->owner_id,
             'type' => 'application',
             'title' => 'New Dorm Application',
-            'message' => $applicantName . ' has applied to your dorm: ' . $dorm->name,
+            'message' => $applicantName . ' has applied to your dorm: ' . $dorms->name,
             'related_id' => $dormId,
             'is_read' => 0,
         ]);
@@ -82,9 +82,9 @@ class DormApplicationController extends Controller
     public function myApplications()
     {
         $applications = DB::table('dorm_applications')
-            ->join('dorm', 'dorm_applications.dorm_id', '=', 'dorm.id')
+            ->join('dorms', 'dorm_applications.dorm_id', '=', 'dorms.id')
             ->where('dorm_applications.user_id', Auth::id())
-            ->select('dorm_applications.*', 'dorm.name as dorm_name', 'dorm.location')
+            ->select('dorm_applications.*', 'dorms.name as dorm_name', 'dorms.location')
             ->orderBy('dorm_applications.created_at', 'desc')
             ->get();
 
@@ -95,11 +95,11 @@ class DormApplicationController extends Controller
     public function receivedApplications()
     {
         $applications = DB::table('dorm_applications')
-            ->join('dorm', 'dorm_applications.dorm_id', '=', 'dorm.id')
+            ->join('dorms', 'dorm_applications.dorm_id', '=', 'dorms.id')
             ->join('users', 'dorm_applications.user_id', '=', 'users.id')
-            ->where('dorm.owner_id', Auth::id())
+            ->where('dorms.owner_id', Auth::id())
             ->where('dorm_applications.status', 'pending') // only pending
-            ->select('dorm_applications.*', 'dorm.name as dorm_name', 'users.name as applicant_name', 'users.email as applicant_email')
+            ->select('dorm_applications.*', 'dorms.name as dorm_name', 'users.name as applicant_name', 'users.email as applicant_email')
             ->orderBy('dorm_applications.created_at', 'desc')
             ->get();
 

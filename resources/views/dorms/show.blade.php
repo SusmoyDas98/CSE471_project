@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $dorm->name }} - DormMate</title>
+    <title>{{ $dorms->name }} - DormMate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -94,13 +94,13 @@
         @endif
 
         <div class="dorm-details">
-            <h1 style="font-family: 'Playfair Display', serif; font-weight: 700; color: var(--primary);">{{ $dorm->name }}</h1>
+            <h1 style="font-family: 'Playfair Display', serif; font-weight: 700; color: var(--primary);">{{ $dorms->name }}</h1>
             <div class="row mt-4">
                 <div class="col-md-6">
-                    <p><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Location:</strong> {{ $dorm->location }}</p>
-                    <p><i class="fas fa-door-open me-2 text-primary"></i><strong>Available Rooms:</strong> {{ $dorm->room_count }}</p>
-                    <p><i class="fas fa-bed me-2 text-primary"></i><strong>Room Types:</strong> {{ $dorm->room_types }}</p>
-                    <p><i class="fas fa-info-circle me-2 text-primary"></i><strong>Status:</strong> <span class="badge bg-success">{{ ucfirst($dorm->status) }}</span></p>
+                    <p><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Location:</strong> {{ $dorms->location }}</p>
+                    <p><i class="fas fa-door-open me-2 text-primary"></i><strong>Available Rooms:</strong> {{ $dorms->number_of_rooms }}</p>
+                    <p><i class="fas fa-bed me-2 text-primary"></i><strong>Room Types:</strong> {{ $dorms->room_types }}</p>
+                    <p><i class="fas fa-info-circle me-2 text-primary"></i><strong>Status:</strong> <span class="badge bg-success">{{ ucfirst($dorms->status) }}</span></p>
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="rating">
@@ -127,7 +127,7 @@
         {{-- Apply Button (NEW) --}}
         @if(Auth::check() && Auth::user()->role === 'Dorm Seeker')
             <div class="dorm-details text-center">
-                <a href="{{ route('dorms.apply', $dorm->id) }}" class="btn btn-primary btn-lg">
+                <a href="{{ route('dorms.apply', $dorms->id) }}" class="btn btn-primary btn-lg">
                     <i class="fas fa-paper-plane me-2"></i>Apply to This Dorm
                 </a>
             </div>
@@ -200,7 +200,7 @@
                                                 <h5 class="modal-title" id="editReviewLabel{{ $review->id }}">Edit Review</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <form method="POST" action="{{ route('dorms.review', $dorm->id) }}">
+                                            <form method="POST" action="{{ route('dorms.review', $dorms->id) }}">
                                                 @csrf
                                                 <input type="hidden" name="edit_review_id" value="{{ $review->id }}">
                                                 <div class="modal-body">
@@ -248,7 +248,7 @@
                     </ul>
                 </div>
             @endif
-            <form method="POST" action="{{ route('dorms.review', $dorm->id) }}">
+            <form method="POST" action="{{ route('dorms.review', $dorms->id) }}">
                 @csrf
                 <div class="mb-4">
                     <label class="form-label fw-bold">Your Rating</label>

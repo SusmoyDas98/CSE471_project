@@ -11,10 +11,10 @@ class DormReviewController extends Controller
     // Show all dorms for review
     public function index()
     {
-        $dorms = DB::table('dorm')
-            ->select('dorm.*', DB::raw('COALESCE(AVG(dorm_reviews.rating), 0) as avg_rating'), DB::raw('COUNT(dorm_reviews.id) as review_count'))
-            ->leftJoin('dorm_reviews', 'dorm.id', '=', 'dorm_reviews.dorm_id')
-            ->groupBy('dorm.id', 'dorm.owner_id', 'dorm.name', 'dorm.location', 'dorm.dorm_review', 'dorm.room_count', 'dorm.room_types', 'dorm.status', 'dorm.created_at', 'dorm.updated_at')
+        $dorms = DB::table('dorms')
+            ->select('dorms.*', DB::raw('COALESCE(AVG(dorm_reviews.rating), 0) as avg_rating'), DB::raw('COUNT(dorm_reviews.id) as review_count'))
+            ->leftJoin('dorm_reviews', 'dorms.id', '=', 'dorm_reviews.dorm_id')
+            ->groupBy('dorms.id', 'dorms.owner_id', 'dorms.name', 'dorms.location', 'dorms.dorm_review', 'dorms.number_of_rooms', 'dorms.room_types', 'dorms.status', 'dorms.created_at', 'dorms.updated_at')
             ->get();
 
         return view('dorms.index', compact('dorms'));
@@ -23,9 +23,9 @@ class DormReviewController extends Controller
     // Show single dorm with reviews
     public function show($id)
     {
-        $dorm = DB::table('dorm')->where('id', $id)->first();
+        $dorms = DB::table('dorms')->where('id', $id)->first();
         
-        if (!$dorm) {
+        if (!$dorms) {
             return redirect()->route('dorms.index')->with('error', 'Dorm not found!');
         }
 
@@ -42,7 +42,7 @@ class DormReviewController extends Controller
 
         $reviewCount = $reviews->count();
 
-        return view('dorms.show', compact('dorm', 'reviews', 'avgRating', 'reviewCount'));
+        return view('dorms.show', compact('dorms', 'reviews', 'avgRating', 'reviewCount'));
     }
 
 // Store or update review
@@ -137,7 +137,7 @@ public function storeReview(Request $request, $dormId)
         $dormReviewText = $reviews->pluck('comment_text')->implode(' | '); // concatenate all reviews
         $avgRating = $reviews->avg('rating') ?? 0;
 
-        DB::table('dorm')->where('id', $dormId)->update([
+        DB::table('dorms')->where('id', $dormId)->update([
             'dorm_review' => $dormReviewText,
             'dorm_rating' => $avgRating,
         ]);

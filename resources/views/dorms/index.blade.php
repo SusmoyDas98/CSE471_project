@@ -83,25 +83,24 @@
             </div>
         @else
             <div class="row">
-                @foreach($dorms as $dorm)
+                @foreach($dorms as $dorms)
                     <div class="col-md-6 col-lg-4">
                         <div class="dorm-card">
                             <div class="dorm-card-body">
-                                <h4 class="fw-bold mb-2">{{ $dorm->name }}</h4>
-
+                                <h4 class="fw-bold mb-2">{{ $dorms->name }}</h4>
                                 <p class="text-secondary mb-2">
-                                    <i class="fas fa-map-marker-alt me-1"></i>{{ $dorm->location }}
+                                    <i class="fas fa-map-marker-alt me-1"></i>{{ $dorms->location }}
                                 </p>
 
                                 <p class="mb-2">
-                                    <i class="fas fa-door-open me-1"></i>{{ $dorm->room_count }} rooms
+                                    <i class="fas fa-door-open me-1"></i>{{ $dorms->number_of_rooms }} rooms
                                 </p>
 
                                 <div class="mb-3">
-                                    @if($dorm->avg_rating)
+                                    @if($dorms->avg_rating)
                                         <span class="rating">
                                             @for($i = 1; $i <= 5; $i++)
-                                                @if($i <= round($dorm->avg_rating))
+                                                @if($i <= round($dorms->avg_rating))
                                                     <i class="fas fa-star"></i>
                                                 @else
                                                     <i class="far fa-star"></i>
@@ -109,14 +108,14 @@
                                             @endfor
                                         </span>
                                         <span class="text-secondary ms-1">
-                                            ({{ number_format($dorm->avg_rating, 1) }}) - {{ $dorm->review_count }} reviews
+                                            ({{ number_format($dorms->avg_rating, 1) }}) - {{ $dorms->review_count }} reviews
                                         </span>
                                     @else
                                         <span class="text-secondary">No reviews yet</span>
                                     @endif
                                 </div>
 
-                                <a href="{{ route('dorms.show', $dorm->id) }}" class="btn btn-primary w-100">
+                                <a href="{{ route('dorms.show', $dorms->id) }}" class="btn btn-primary w-100">
                                     <i class="fas fa-eye me-2"></i>View Details
                                 </a>
                             </div>

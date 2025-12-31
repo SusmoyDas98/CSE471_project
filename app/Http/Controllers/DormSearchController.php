@@ -10,7 +10,7 @@ class DormSearchController extends Controller
 {
     public function index()
     {
-        $locations = DB::table('dorm')
+        $locations = DB::table('dorms')
             ->select('location')
             ->distinct()
             ->whereNotNull('location')
@@ -19,7 +19,7 @@ class DormSearchController extends Controller
             ->sort()
             ->values();
 
-        $roomTypes = DB::table('dorm')
+        $roomTypes = DB::table('dorms')
             ->whereNotNull('room_types')
             ->pluck('room_types')
             ->flatMap(fn($v) => array_map('trim', explode(',', $v)))
@@ -27,7 +27,7 @@ class DormSearchController extends Controller
             ->sort()
             ->values();
 
-        $genderPreferences = DB::table('dorm')
+        $genderPreferences = DB::table('dorms')
             ->whereNotNull('gender_preference')
             ->pluck('gender_preference')
             ->flatMap(fn($v) => array_map('trim', explode(',', $v)))
@@ -35,7 +35,7 @@ class DormSearchController extends Controller
             ->sort()
             ->values();
 
-        $facilities = DB::table('dorm')
+        $facilities = DB::table('dorms')
             ->whereNotNull('facilities')
             ->pluck('facilities')
             ->flatMap(fn($v) => array_map('trim', explode(',', $v)))
@@ -54,7 +54,7 @@ class DormSearchController extends Controller
     // ================= MANUAL SEARCH =================
     public function manualSearch(Request $request)
     {
-        $query = DB::table('dorm')
+        $query = DB::table('dorms')
             ->where('status', 'Approved');
 
         if ($request->filled('dorm_name')) {
@@ -123,7 +123,7 @@ class DormSearchController extends Controller
         }
 
         $dorms = $query
-            ->select('dorm.*', 'dorm_rating as avg_rating')
+            ->select('dorms.*', 'dorm_rating as avg_rating')
             ->orderByDesc('avg_rating')
             ->get();
 
@@ -152,32 +152,32 @@ class DormSearchController extends Controller
         $userProfessions = array_filter(array_map(fn($p) => strtolower(trim($p)), explode(',', $profile->profession)));
         $totalPossibleScore = 1 + 1 + count($userProfessions);
 
-        $dorms = DB::table('dorm')
+        $dorms = DB::table('dorms')
             ->where('status', 'Approved')
-            ->select('dorm.*', 'dorm_rating as avg_rating')
+            ->select('dorms.*', 'dorm_rating as avg_rating')
             ->get();
 
-        $dorms->each(function ($dorm) use ($profile, $userProfessions, $totalPossibleScore) {
+        $dorms->each(function ($dorms) use ($profile, $userProfessions, $totalPossibleScore) {
             $matchingScore = 0;
 
             $userGender = strtolower(trim($profile->gender));
             $userMarital = strtolower(trim($profile->marital_status));
 
-            $dormGenderPrefs = array_filter(array_map(fn($g) => strtolower(trim($g)), explode(',', $dorm->gender_preference ?? '')));
+            $dormGenderPrefs = array_filter(array_map(fn($g) => strtolower(trim($g)), explode(',', $dorms->gender_preference ?? '')));
             if (!empty($dormGenderPrefs) && in_array($userGender, $dormGenderPrefs, true)) {
                 $matchingScore += 1;
             }
 
-            $dormMaritalPrefs = array_filter(array_map(fn($m) => strtolower(trim($m)), explode(',', $dorm->marital_status ?? '')));
+            $dormMaritalPrefs = array_filter(array_map(fn($m) => strtolower(trim($m)), explode(',', $dorms->marital_status ?? '')));
             if (!empty($dormMaritalPrefs) && in_array($userMarital, $dormMaritalPrefs, true)) {
                 $matchingScore += 1;
             }
 
-            $dormProfessions = array_filter(array_map(fn($p) => strtolower(trim($p)), explode(',', $dorm->profession ?? '')));
+            $dormProfessions = array_filter(array_map(fn($p) => strtolower(trim($p)), explode(',', $dorms->profession ?? '')));
             $matches = array_intersect($userProfessions, $dormProfessions);
             $matchingScore += count($matches);
 
-            $dorm->match_percentage = $totalPossibleScore > 0 ? (int) round(($matchingScore * 100) / $totalPossibleScore) : 0;
+            $dorms->match_percentage = $totalPossibleScore > 0 ? (int) round(($matchingScore * 100) / $totalPossibleScore) : 0;
         });
 
         // Decide results based on counts of matching tiers (>=80, >=50).

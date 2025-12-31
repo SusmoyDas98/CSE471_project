@@ -19,7 +19,7 @@ class AdminDormController extends Controller
         Dorm::create([
             'name' => $submission->dorm_name,
             'location' => $submission->dorm_location,
-            'room_count' => $submission->room_count,
+            'number_of_rooms' => $submission->number_of_rooms,
             'room_types' => $submission->room_types,
             'owner_id' => $submission->owner_id,
         ]);

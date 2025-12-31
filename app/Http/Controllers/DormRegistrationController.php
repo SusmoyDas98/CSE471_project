@@ -26,7 +26,7 @@ class DormRegistrationController extends Controller
         $request->validate([
             'dorm_name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'room_count' => 'required|integer|min:1',
+            'number_of_rooms' => 'required|integer|min:1',
             'room_types' => 'required|string|max:255',
             'description' => 'required|string',
         ]);
@@ -34,7 +34,7 @@ class DormRegistrationController extends Controller
         $submission = DormRegistrationSubmission::create([
             'dorm_name' => $request->dorm_name,
             'dorm_location' => $request->location,
-            'room_count' => $request->room_count,
+            'number_of_rooms' => $request->number_of_rooms,
             'room_types' => $request->room_types,
             'description' => $request->description,
             'owner_id' => auth()->id(),
@@ -82,7 +82,7 @@ public function approve($id)
     Dorm::create([
         'name' => $submission->dorm_name,
         'location' => $submission->dorm_location,
-        'room_count' => $submission->room_count,
+        'number_of_rooms' => $submission->number_of_rooms,
         'room_types' => $submission->room_types,
         'owner_id' => $submission->owner_id,
     ]);
@@ -147,7 +147,7 @@ public function decline(Request $request, $id)
             'user_id' => $application->user_id, // correct column
             'type' => 'application',
             'title' => 'Application Approved',
-            'message' => 'Your application for "' . $application->dorm->name . '" has been approved.',
+            'message' => 'Your application for "' . $application->dorms->name . '" has been approved.',
             'is_read' => false,
         ]);
 
@@ -166,7 +166,7 @@ public function decline(Request $request, $id)
             'user_id' => $application->user_id, // correct column
             'type' => 'application',
             'title' => 'Application Declined',
-            'message' => 'Your application for "' . $application->dorm->name . '" has been declined.',
+            'message' => 'Your application for "' . $application->dorms->name . '" has been declined.',
             'is_read' => false,
         ]);
 

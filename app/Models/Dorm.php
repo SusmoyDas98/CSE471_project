@@ -10,7 +10,7 @@ class Dorm extends Model
     use HasFactory;
 
     // Specify the table name
-    protected $table = 'dorm';
+    protected $table = 'dorms';
 
     // Fillable fields
     protected $fillable = [

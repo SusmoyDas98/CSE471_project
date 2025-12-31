@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply to {{ $dorm->name }} - DormMate</title>
+    <title>Apply to {{ $dorms->name }} - DormMate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -63,13 +63,13 @@
     <div class="container py-5">
         <div class="application-form">
             <h1 class="text-center mb-4" style="font-family: 'Playfair Display', serif; font-weight: 700; color: var(--primary);">
-                Apply to {{ $dorm->name }}
+                Apply to {{ $dorms->name }}
             </h1>
             
             <div class="alert alert-info mb-4">
                 <i class="fas fa-info-circle me-2"></i>
-                <strong>Location:</strong> {{ $dorm->location }} | 
-                <strong>Available Rooms:</strong> {{ $dorm->room_count }}
+                <strong>Location:</strong> {{ $dorms->location }} | 
+                <strong>Available Rooms:</strong> {{ $dorms->number_of_rooms }}
             </div>
 
             @if($errors->any())
@@ -82,7 +82,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('dorms.apply.store', $dorm->id) }}">
+            <form method="POST" action="{{ route('dorms.apply.store', $dorms->id) }}">
                 @csrf
                 
                 <div class="mb-4">

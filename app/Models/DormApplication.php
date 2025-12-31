@@ -18,7 +18,7 @@ class DormApplication extends Model
     ];
 
     // Relationship to Dorm
-    public function dorm()
+    public function dorms()
     {
         return $this->belongsTo(Dorm::class, 'dorm_id');
     }

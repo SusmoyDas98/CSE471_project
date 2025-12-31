@@ -131,11 +131,11 @@ body {
         <div class="dorm-card">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h3 class="mb-2">{{ $dorm->dorm_name }}</h3>
-                    <p class="mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Location:</strong> {{ $dorm->dorm_location }}</p>
-                    <p class="mb-1"><i class="fas fa-door-open me-2 text-primary"></i><strong>Rooms:</strong> {{ $dorm->room_count }}</p>
-                    <p class="mb-1"><i class="fas fa-bed me-2 text-primary"></i><strong>Room Types:</strong> {{ $dorm->room_types }}</p>
-                    <p class="mb-1"><i class="fas fa-user me-2 text-primary"></i><strong>Owner:</strong> {{ $dorm->dorm_owner_name }} ({{ $dorm->dorm_owner_email }})</p>
+                    <h3 class="mb-2">{{ $dorms->dorm_name }}</h3>
+                    <p class="mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Location:</strong> {{ $dorms->dorm_location }}</p>
+                    <p class="mb-1"><i class="fas fa-door-open me-2 text-primary"></i><strong>Rooms:</strong> {{ $dorms->number_of_rooms }}</p>
+                    <p class="mb-1"><i class="fas fa-bed me-2 text-primary"></i><strong>Room Types:</strong> {{ $dorms->room_types }}</p>
+                    <p class="mb-1"><i class="fas fa-user me-2 text-primary"></i><strong>Owner:</strong> {{ $dorms->dorm_owner_name }} ({{ $dorms->dorm_owner_email }})</p>
                     <small class="text-muted">
                         <i class="fas fa-clock me-1"></i>Submitted {{ \Carbon\Carbon::parse($dorm->submitted_at)->diffForHumans() }}
                     </small>
@@ -144,16 +144,16 @@ body {
                 <div class="col-md-4 text-end mt-4 mt-md-0" style="padding-right: 80px;">
                     <!-- Approve Button -->
                     <button type="button" class="btn btn-approve mb-2 approve-btn"
-                        data-dorm-name="{{ $dorm->dorm_name }}"
-                        data-dorm-id="{{ $dorm->id }}"
+                        data-dorm-name="{{ $dorms->dorm_name }}"
+                        data-dorm-id="{{ $dorms->id }}"
                         data-bs-toggle="modal" data-bs-target="#approveModal">
                         <i class="fas fa-check me-2"></i>Approve Dorm
                     </button>
 
                     <!-- Decline Button -->
                     <button type="button" class="btn btn-decline decline-btn" 
-                        data-dorm-name="{{ $dorm->dorm_name }}"
-                        data-dorm-id="{{ $dorm->id }}"
+                        data-dorm-name="{{ $dorms->dorm_name }}"
+                        data-dorm-id="{{ $dorms->id }}"
                         data-bs-toggle="modal" data-bs-target="#declineModal">
                         <i class="fas fa-times me-2"></i>Decline Dorm
                     </button>

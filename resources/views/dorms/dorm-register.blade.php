@@ -453,7 +453,7 @@
                         </div>
                         <div class="col-md-6 mb-4">
                             <label for="numRooms" class="form-label">Available Rooms *</label>
-                            <input type="number" class="form-control" id="numRooms" name="room_count" placeholder="e.g., 25" min="1" value="{{ old('room_count') }}" required>
+                            <input type="number" class="form-control" id="numRooms" name="number_of_rooms" placeholder="e.g., 25" min="1" value="{{ old('number_of_rooms') }}" required>
                         </div>
                         <div class="col-md-6 mb-4">
                             <label for="roomTypes" class="form-label">Room Categories *</label>

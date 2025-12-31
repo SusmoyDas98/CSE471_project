@@ -717,46 +717,46 @@ fetch('{{ route('dorms.search.ai') }}', {
                     </div>
                 `;
             } else {
-                dormsList.innerHTML = dorms.map(dorm => `
+                dormsList.innerHTML = dorms.map(dorms => `
                     <div class="dorm-card">
                         <div class="dorm-title">
-                            <h3 style="margin:0;">${dorm.name}</h3>
-                            ${searchType === 'ai' ? `<span class="match-badge">${dorm.match_percentage}%</span>` : ''}
+                            <h3 style="margin:0;">${dorms.name}</h3>
+                            ${searchType === 'ai' ? `<span class="match-badge">${dorms.match_percentage}%</span>` : ''}
                         </div>
                         <hr class="dorm-divider" />
                         <div class="dorm-info">
                             <div class="dorm-info-item">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span>${dorm.location || 'Not specified'}</span>
+                                <span>${dorms.location || 'Not specified'}</span>
                             </div>
                             <div class="dorm-info-item">
                                 <i class="fas fa-door-open"></i>
-                                <span>${dorm.room_count} rooms</span>
+                                <span>${dorms.number_of_rooms} rooms</span>
                             </div>
                             <div class="dorm-info-item">
                                 <i class="fas fa-bed"></i>
-                                <span>${dorm.room_types || 'Various types'}</span>
+                                <span>${dorms.room_types || 'Various types'}</span>
                             </div>
                             <div class="dorm-info-item">
                                 <i class="fas fa-dollar-sign"></i>
-                                <span>${dorm.rent ? `৳${dorm.rent}/month` : 'Contact for price'}</span>
+                                <span>${dorms.rent ? `৳${dorms.rent}/month` : 'Contact for price'}</span>
                             </div>
                             <div class="dorm-info-item">
                                 <i class="fas fa-venus-mars"></i>
-                                <span>${dorm.gender_preference || 'Any'}</span>
+                                <span>${dorms.gender_preference || 'Any'}</span>
                             </div>
                             <div class="dorm-info-item dorm-rating">
-                                ${generateStars(dorm.avg_rating)}
-                                <span style="color: #475569; margin-left: 5px;">(${parseFloat(dorm.avg_rating).toFixed(1)})</span>
+                                ${generateStars(dorms.avg_rating)}
+                                <span style="color: #475569; margin-left: 5px;">(${parseFloat(dorms.avg_rating).toFixed(1)})</span>
                             </div>
                         </div>
-                        ${dorm.facilities ? `
+                        ${dorms.facilities ? `
                             <div class="mb-3 dorm-info-item">
                                 <i class="fas fa-concierge-bell" style="color: var(--primary); margin-right: 8px;"></i>
-                                <span>${dorm.facilities}</span>
+                                <span>${dorms.facilities}</span>
                             </div>
                         ` : ''}
-                        <a href="/dorms/${dorm.id}" class="btn-view-dorm">
+                        <a href="/dorms/${dorms.id}" class="btn-view-dorm">
                             <i class="fas fa-eye me-2"></i>View Details
                         </a>
                     </div>
