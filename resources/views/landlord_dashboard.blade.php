@@ -10,19 +10,11 @@
 
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="#">DormMate</a>
-            <div class="nav-links">
-                <a href="#" class="active"><i class="fas fa-th-large me-2"></i>Dashboard</a>
-                <a href="#"><i class="fas fa-building me-2"></i>Properties</a>
-                <a href="#"><i class="fas fa-users me-2"></i>Tenants</a>
-                <a href="#"><i class="fas fa-chart-line me-2"></i>Analytics</a>
-                <a href="#"><i class="fas fa-bell me-2"></i>Notifications</a>
-                <a href="#"><i class="fas fa-user-circle me-2"></i>Profile</a>
-            </div>
-        </div>
-    </nav>
+    <x-page-header>
+        <x-slot name="nav_links">
+            <x-nav-buttons />
+        </x-slot>
+    </x-page-header>
     
     <div class="main-content" id="mainContent">
         <!-- Content will be dynamically loaded -->

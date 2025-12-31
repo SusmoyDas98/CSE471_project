@@ -10,18 +10,11 @@
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="container-fluid px-4">
-        <a class="navbar-brand" href="#">DormMate</a>
-        <div class="nav-links">
-            <a href="#"><i class="fas fa-home"></i> Home</a>
-            <a href="#" class="active"><i class="fas fa-comments"></i> Chat</a>
-            <a href="#"><i class="fas fa-credit-card"></i> Payments</a>
-            <a href="#"><i class="fas fa-wrench"></i> Maintenance</a>
-            <a href="#"><i class="fas fa-user"></i> Profile</a>
-        </div>
-    </div>
-</nav>
+    <x-page-header>
+        <x-slot name="nav_links">
+            <x-nav-buttons />
+        </x-slot>
+    </x-page-header>
 
 <div class="chat-container">
 

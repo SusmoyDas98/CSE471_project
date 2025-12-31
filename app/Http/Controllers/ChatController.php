@@ -18,8 +18,8 @@ class ChatController extends Controller
 
     public function __construct()
     {
-        // 👉 OPTION 2: Switch user quickly for testing
-        $this->authUserId = 12; // e.g. 12 = Hiroshi, 13 = Sarah, etc.
+        
+        $this->authUserId = 14; // e.g. 12 = Hiroshi, 13 = Sarah, etc.
     }
 
     /**

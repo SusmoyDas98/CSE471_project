@@ -10,18 +10,11 @@
 
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="#">DormMate</a>
-            <div class="nav-links">
-                <a href="#" class="active"><i class="fas fa-home me-2"></i>Home</a>
-                <a href="#"><i class="fas fa-comments me-2"></i>Community</a>
-                <a href="#"><i class="fas fa-file-invoice-dollar me-2"></i>Payments</a>
-                <a href="#"><i class="fas fa-wrench me-2"></i>Maintenance</a>
-                <a href="#"><i class="fas fa-user-circle me-2"></i>Profile</a>
-            </div>
-        </div>
-    </nav>
+    <x-page-header>
+        <x-slot name="nav_links">
+            <x-nav-buttons />
+        </x-slot>
+    </x-page-header>
     
     <div class="main-content" id="mainContent">
         <!-- Content will be dynamically loaded -->
@@ -34,7 +27,8 @@
     const dormData = @json($dormData);
     const latestPost = @json($latestPost);
     const userName = @json($userName);
-    const holidays = [];
+    const holidays = @json($holidays);
+
         
 
         

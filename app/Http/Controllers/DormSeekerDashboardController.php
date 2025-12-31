@@ -16,12 +16,21 @@ class DormSeekerDashboardController extends Controller
 
         // 🔹 External Calendar API (Demo integration)
         $calendarResponse = Http::get(
-            'https://date.nager.at/api/v3/PublicHolidays/2024/BD'
+            'https://date.nager.at/api/v3/PublicHolidays/2025/US'
         );
 
         $holidays = $calendarResponse->successful()
-            ? $calendarResponse->json()
+            ? collect($calendarResponse->json())
+                ->take(10) // demo-friendly
+                ->map(function ($h) {
+                    return [
+                        'name' => $h['localName'],
+                        'date' => $h['date'],
+                    ];
+                })
+                ->values()
             : [];
+
         #$holidays = $calendarResponse->successful()
             #? collect($calendarResponse->json())->take(5)->map(function ($h) {
                 #return [
@@ -29,7 +38,8 @@ class DormSeekerDashboardController extends Controller
                     #'date' => $h['date'],
                 #];
             #})->values()
-            #: [];    
+            #: [];
+
 
         return view('dorm-seeker-dashboard', [
             'userName'           => $user['name'],
