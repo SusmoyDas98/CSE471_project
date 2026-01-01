@@ -15,11 +15,11 @@ return new class extends Migration {
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->integer('number_of_rooms')->nullable();
-            $table->enum('gender', ['Male', 'Female', 'Not Gender Specified'])->nullable();
+            $table->enum('gender_preference', ['Male', 'Female', 'Not Gender Specified']);
             $table->text('facilities')->nullable();
             $table->text('room_types')->nullable();
             $table->string('student_only')->nullable();
-            $table->string("expected_matrimonial_status")->nullable();
+            $table->string("expected_marital_status");
             $table->string('owner_national_id')->nullable();
             $table->string('passport')->nullable();
             $table->string('property_ownership_doc')->nullable();
