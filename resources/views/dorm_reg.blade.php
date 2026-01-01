@@ -98,8 +98,8 @@
                             <input type="text" class="form-control" id="ownerName" name="owner_name" placeholder="Enter your full legal name"     value="{{ old('owner_name') }}" required>
                         </div>
                         <div class="col-md-6 mb-4">
-                            <label for="ownerPhone" class="form-label">Contact Number *</label>
-                            <input type="tel" class="form-control" id="ownerPhone" name="owner_phone" placeholder="+1 (555) 123-4567"    value="{{ old('owner_phone') }}"  required>
+                            <label for="ownerPhone" class="form-label">Dorm's Contact Number *</label>
+                            <input type="tel" class="form-control" id="ownerPhone" name="owner_phone" placeholder="This number will be used as dorm's hotline"    value="{{ old('owner_phone') }}"  required>
                         </div>
                     </div>
                 </div>
@@ -183,7 +183,7 @@
                             </div>                            
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="facilities[]" value="Other" id="other_facility">
+                                {{-- <input class="form-check-input" type="checkbox" name="facilities[]" value="Other" id="other_facility"> --}}
                                 <label class="form-check-label" for="other_facility">Other</label>
                                 <input type="text" class="form-control mt-1" name="facilities_other" placeholder="Add other facilities: Use commas (,) to separate multiple entires">
                             </div>      
@@ -282,12 +282,14 @@
                             <div class="upload-box" onclick="document.getElementById('ownership').click()">
                                 <label class="upload-label">
                                     <i class="fas fa-cloud-upload-alt"></i>
-                                    <p class="mb-0">Upload Ownership Documents</p>
-                                    <small class="text-muted">PDF, JPG, PNG • Max 5MB</small>
-                                    <input type="file" id="ownership" name="ownership_document"  required>
+                                    <p class="mb-0">Upload Ownership Document</p>
+                                    <small class="text-muted">PDF, JPG, PNG • Max 5MB</small>                                    
+                                    <input type="file" id="ownership" name="ownership_document[]" accept=".jpg,.jpeg,.png" multiple  required>
                                     <div class="file-name" id="ownershipName"></div>
                                 </label>
                             </div>
+                    <div class="preview-document" id="imagePreview_docs"></div>
+
                         </div>
                     </div>
                 </div>

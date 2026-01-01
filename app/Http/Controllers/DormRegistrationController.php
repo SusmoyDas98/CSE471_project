@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Dorm_registration_submission;
 use App\Models\User;
+use App\Models\User_details;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Dorm;
 use Illuminate\Support\Facades\DB;
@@ -41,9 +42,12 @@ class DormRegistrationController extends Controller
     }
     public function submitted_dorm_view($id){
         $submission_infos = Dorm_registration_submission::find($id);
-        $dorm_owner_infos = User::select("id","name","email","role","subscription_type","created_at")
-                                ->where('id', $submission_infos->owner_id)
+        $dorm_owner_infos = User_details::select("user_id","gender","age","contact_number")
+                                ->where('user_id', $submission_infos->owner_id)
                                 ->first();
+        $dorm_owner_user_infos = User::select("name","email","role","subscription_type",'created_at')
+                                ->where('id', $submission_infos->owner_id)
+                                ->first();                                
         $status_update = false;
         if($submission_infos->status !== "Pending"){
             $status_update = true;
@@ -51,6 +55,7 @@ class DormRegistrationController extends Controller
         return view("submitted_dorm", [
             "submission_infos" => $submission_infos, 
             "dorm_owner_infos" => $dorm_owner_infos,
+            "dorm_owner_user_infos" => $dorm_owner_user_infos,
             "status_update" => $status_update
         ]);
     }
@@ -66,74 +71,7 @@ class DormRegistrationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(Request $request)
-    // {
-    //     //
-    //     $status = "Pending";
 
-    //     $request->validate([
-    //         'owner_name' => 'required|string|max:255',
-    //         'owner_phone' => 'required|string',
-    //         'dorm_name' => 'required|string|max:255',
-    //         'dorm_address' => 'required|string|max:255',
-    //         "latitude" =>'nullable|numeric',
-    //         "longitude" =>"nullable|numeric",
-    //         'num_rooms' => 'required|integer|min:1',
-    //         'room_types' => 'required|array',
-    //         'room_types.*' => 'required|string|max:255',
-    //         'national_id' => 'required|mimes:png,jpg,pdf|max:5000',
-    //         'passport' => 'required|mimes:png,jpg,pdf|max:5000',
-    //         'ownership_document' => 'required|mimes:png,jpg,pdf|max:5000',
-    //         'dorm_pictures' => 'required|array|min:1|max:5',
-    //         'dorm_pictures.*' => 'required|image|mimes:png,jpg|max:5000'
-    //     ], []);
-    //     $errors = [];
-    //     if(!$request->latitude || !$request->longitude){
-    //         return redirect()->back()
-    //             ->withInput()
-    //             ->withErrors(['location' => 'Location must be pointed on the map']);
-    //     }
-    //     DB::beginTransaction();
-    //     // dd($request->all());
-    //     $roomTypesArray = array_map('trim', explode(',', $request->room_types[0] ?? $request->room_types));
-    //     $roomTypesArray = array_map("ucwords", $roomTypesArray);
-    //     try{
-    //         Dorm_registration_submission::create([
-    //         "owner_id" => 19,
-    //         "dorm_owner_name" => $request->owner_name,
-    //         "phone_number" => $request->owner_phone,
-    //         "dorm_name" => $request->dorm_name,
-    //         "dorm_location" => $request->dorm_address,
-    //         "latitude" => $request->latitude,
-    //         "longitude"  => $request->longitude,
-    //         "number_of_rooms" => $request->num_rooms,
-    //         "status" =>   $status,
-    //         "room_types" => $roomTypesArray,
-    //         "owner_nid" => $request->file('national_id')->store('dorm_registrations/national_ids', 'public'),
-    //         "owner_passport" => $request->file('passport')->store('dorm_registrations/passports', 'public'),
-    //         "property_document" => $request->file('ownership_document')->store('dorm_registrations/ownership_documents', 'public'),
-    //         "dorm_images" => collect($request->file('dorm_pictures'))->map(function ($file) {
-    //             return $file->store('dorm_registrations/dorm_pictures', 'public');
-    //         })->toArray()
-    //     ]);
-    //     DB::commit();
-        
-    //     return redirect()->route("dorm_reg")->with('status', 'Successfully submitted to the admins for approval');}
-    //     catch(\Throwable $error){
-    //         DB::rollBack();
-    //         Log::error("Submission Failed!!!",[
-    //             'error' => $error->getMessage()
-    //         ]);
-    //         return redirect()->back()
-    //         ->withInput()
-    //         ->withErrors([
-    //             'submission_error' => "Something went wrong while submitting!!! Please try again..."
-    //         ]);
-
-    //     }
-
-
-    // }
 
 public function store(Request $request)
 {
@@ -151,12 +89,15 @@ public function store(Request $request)
         'room_types.*' => 'required|string|max:255',
         'national_id' => 'required|mimes:png,jpg,pdf|max:5000',
         'passport' => 'required|mimes:png,jpg,pdf|max:5000',
-        'ownership_document' => 'required|mimes:png,jpg,pdf|max:5000',
+        'ownership_document' => 'required',
+        'ownership_document.*' => 'required|mimes:png,jpg|max:5000',
+
         'dorm_pictures' => 'required|array|min:1|max:5',
         'dorm_pictures.*' => 'required|image|mimes:png,jpg|max:5000',
-        'gender' => 'required|string|in:Male,Female,Not Gender Specified',
+        // 'gender' => 'required|string|in:Male,Female,Not Gender Specified',
+        'gender' => 'required|string',
         'student_only' => 'required|string|in:Yes,No',
-        'expected_matrimonial_status' => 'required|string|in:Married,Unmarried,Not Specified',
+        'expected_matrimonial_status' => 'required|string',
         'facilities' => 'required|array',
         'facilities.*' => 'string',
         'facilities_other' => 'nullable|string|max:255',
@@ -177,12 +118,12 @@ public function store(Request $request)
     if ($request->filled('facilities_other')) {
         $facilities[] = $request->input('facilities_other');
     }
-
     try {
+        // dd($request->all());
         Dorm_registration_submission::create([
-            "owner_id" => 2,
+            "owner_id" => 1,
             "dorm_owner_name" => $request->owner_name,
-            "phone_number" => $request->owner_phone,
+            "dorm_hotline" => $request->owner_phone,
             "dorm_name" => $request->dorm_name,
             "dorm_location" => $request->dorm_address,
             "latitude" => $request->latitude,
@@ -190,13 +131,15 @@ public function store(Request $request)
             "number_of_rooms" => $request->num_rooms,
             "status" => $status,
             "room_types" => json_encode($roomTypesArray),
-            "gender" => $request->gender,
+            "gender_preference" => $request->gender,
             "student_only" => $request->student_only,
-            "expected_matrimonial_status" => $request->expected_matrimonial_status,
+            "expected_marital_status" => $request->expected_matrimonial_status,
             "facilities" => json_encode($facilities), // store as JSON
             "owner_national_id" => $request->file('national_id')->store('dorm_registrations/national_ids', 'public'),
             "passport" => $request->file('passport')->store('dorm_registrations/passports', 'public'),
-            "property_ownership_doc" => $request->file('ownership_document')->store('dorm_registrations/ownership_documents', 'public'),
+            "property_ownership_doc" => json_encode(collect($request->file('ownership_document'))->map(function ($file) {
+                return $file->store('dorm_registrations/ownership_documents', 'public');
+            })->toArray()),          
             "dorm_pictures" => json_encode(collect($request->file('dorm_pictures'))->map(function ($file) {
                 return $file->store('dorm_registrations/dorm_pictures', 'public');
             })->toArray())
