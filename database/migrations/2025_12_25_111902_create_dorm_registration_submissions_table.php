@@ -9,7 +9,7 @@ return new class extends Migration {
             $table->id();
             $table->string('dorm_owner_name');
             $table->foreignId('owner_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('phone_number');
+            $table->string('dorm_hotline');
             $table->string('dorm_name');
             $table->string('dorm_location');
             $table->decimal('latitude', 10, 7)->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string("expected_marital_status");
             $table->string('owner_national_id')->nullable();
             $table->string('passport')->nullable();
-            $table->string('property_ownership_doc')->nullable();
+            $table->text('property_ownership_doc')->nullable();
             $table->text('dorm_pictures')->nullable();
             $table->text('status')->nullable();
             $table->timestamps();

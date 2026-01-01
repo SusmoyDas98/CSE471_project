@@ -15,6 +15,7 @@ return new class extends Migration
                   ->onDelete('cascade');
 
             $table->string('name', 100);
+            $table->string('dorm_hotline');
 
             $table->string('location')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
@@ -23,7 +24,7 @@ return new class extends Migration
                   ->nullable()
                   ->default('No');
             $table->string('owner_passport')->nullable();
-            $table->string('property_document')->nullable();
+            $table->text('property_document')->nullable();
             $table->text('dorm_images')->nullable();
 
             $table->integer('number_of_rooms')->nullable();
