@@ -19,10 +19,16 @@ Route::view("/find_dorm_mate", [PageRedirectController::class, "find_dorm_mate"]
 Route::view("/website_feedback", "website_feedback");
 
 // Document upload / dorm registration
-Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
-Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+#Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+#Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
 
+#Route::middleware('auth')->group(function () {
+    #Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    #Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+#});
 
+Route::get('/documents/test', [DocumentController::class, 'index'])->name('documents.test');
+Route::post('/documents/test', [DocumentController::class, 'store'])->name('documents.store');
 
 
 
