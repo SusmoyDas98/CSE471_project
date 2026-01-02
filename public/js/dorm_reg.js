@@ -129,58 +129,93 @@ document.getElementById('dormRegistrationForm').addEventListener('submit', funct
     }
 });
 
+// map functionality using Leaflet.js
+
 var map = L.map('map');
-setTimeout(function () {
-    map.invalidateSize();
-}, 200);
+setTimeout(function () { map.invalidateSize(); }, 200);
 
 map.setView([23.807859221461392, 90.42861728673599], 10);
+
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-//the map marker
+let marker;
 
-let marker ;
 function placeMarker(latlng){
     if(marker){
         marker.setLatLng(latlng);
-    }
-    else{
-        marker = L.marker(latlng).addTo(map);
+    } else {
+        marker = L.marker(latlng, {draggable:true}).addTo(map);
+
+        // Update address when marker is dragged
+        marker.on('dragend', function(e){
+            const coords = e.target.getLatLng();
+            document.getElementById('latitude').value = coords.lat;
+            document.getElementById('longitude').value = coords.lng;
+            fetchAddress(coords.lat, coords.lng);
+        });
     }
 
+    // Update hidden inputs
     document.getElementById('latitude').value = latlng.lat;
     document.getElementById('longitude').value = latlng.lng;
-
-    // console.log("Latitude:", document.getElementById('latitude').value);
-    // console.log("Longitude:", document.getElementById('longitude').value);    
+    console.log("Marker placed at: ", latlng.lat, latlng.lng);
+    // Fetch address immediately
+    fetchAddress(latlng.lat, latlng.lng);
 }
 
+// Click on map to place marker
 map.on('click', function(e){
     placeMarker(e.latlng);
 });
 
+
+// GOOGLE MAPS LINK FUNCTIONALITY
 function Fetch_location_from_link(){
     var map_link_given = document.getElementById("dorm_location_on_map").value;
-    if (!map_link_given){
-        return ;
-    }
-    var given_link = String(map_link_given);
+    if (!map_link_given) return;
 
+    var given_link = String(map_link_given);
     var start_loc = given_link.indexOf("@");
     if(start_loc === -1) return; 
+
     var start_from = start_loc+1;
     var shrinked_link = given_link.slice(start_from);
     var parts = shrinked_link.split(",");
     var lat = parseFloat(parts[0]);
     var lng = parseFloat(parts[1]);
     if(isNaN(lat) || isNaN(lng)) return; 
-    placeMarker({lat: lat, lng : lng});
+    console.log("Marker placed at: ", lat, lng);
+
+    placeMarker({lat: lat, lng: lng});
     map.setView([lat, lng], 15);
 
-    // console.log("Latitude:", document.getElementById('latitude').value);
-    // console.log("Longitude:", document.getElementById('longitude').value);    
+    // Fetch address for this location
+    fetchAddress(lat, lng);
 }
-    // Log the updated values
+
+// PHOTON API FUNCTION
+function fetchAddress(lat, lng){
+    fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data && data.features && data.features.length > 0){
+                const feature = data.features[0].properties;
+                let address = '';
+                if(feature.name) address += feature.name + ", ";
+                if(feature.city) address += feature.city + ", ";
+                if(feature.state) address += feature.state + ", ";
+                if(feature.country) address += feature.country;
+                
+                document.getElementById('dormAddress').value = address;
+            } else {
+                document.getElementById('dormAddress').value = '';
+            }
+        })
+        .catch(err => {
+            console.error("Error fetching address from Photon:", err);
+            document.getElementById('dormAddress').value = '';
+        });
+}

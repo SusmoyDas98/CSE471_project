@@ -90,7 +90,7 @@ public function store(Request $request)
         'national_id' => 'required|mimes:png,jpg,pdf|max:5000',
         'passport' => 'required|mimes:png,jpg,pdf|max:5000',
         'ownership_document' => 'required',
-        'ownership_document.*' => 'required|mimes:png,jpg|max:5000',
+        'ownership_document.*' => 'required|mimes:png,jpg,pdf|max:5000',
 
         'dorm_pictures' => 'required|array|min:1|max:5',
         'dorm_pictures.*' => 'required|image|mimes:png,jpg|max:5000',
@@ -99,7 +99,7 @@ public function store(Request $request)
         'student_only' => 'required|string|in:Yes,No',
         'expected_matrimonial_status' => 'required|string',
         'facilities' => 'required|array',
-        'facilities.*' => 'string',
+        'facilities.*' => 'string', 
         'facilities_other' => 'nullable|string|max:255',
     ], []);
 
@@ -114,10 +114,25 @@ public function store(Request $request)
     $roomTypesArray = array_map("ucwords", $roomTypesArray);
 
     // Handle facilities
-    $facilities = $request->input('facilities', []);
-    if ($request->filled('facilities_other')) {
-        $facilities[] = $request->input('facilities_other');
-    }
+// Handle facilities
+$facilities = $request->input('facilities', []);
+
+// Only process 'facilities_other' if the "Other" checkbox is checked
+if (in_array('Other', $facilities) && $request->filled('facilities_other')) {
+    // Split by comma, trim spaces
+    $otherFacilities = array_map('trim', explode(',', $request->input('facilities_other')));
+    // Merge with existing facilities
+    $facilities = array_merge($facilities, $otherFacilities);
+}
+
+// Remove the literal "Other" entry
+$facilities = array_filter($facilities, function($f) {
+    return strtolower($f) !== 'other';
+});
+
+// Reindex array to have clean sequential numeric indexes starting from 0
+$facilities = array_values($facilities);
+
     try {
         // dd($request->all());
         Dorm_registration_submission::create([

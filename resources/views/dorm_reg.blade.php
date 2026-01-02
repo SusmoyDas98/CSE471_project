@@ -124,7 +124,7 @@
 
                         <label for="map" class="form-label">Select your dorm location on the map * </label>
                         <div class="search_location">
-                        <input type="text" class="form-control" name = 'dorm_location_on_map' id = "dorm_location_on_map" placeholder = 'Paste here your Dorm location link from Google Maps to ease the process'    value="{{ old('dorm_location_on_map') }}" >
+                        <input type="text" class="form-control" name = 'dorm_location_on_map' id = "dorm_location_on_map" placeholder = 'Paste here your Dorm location URL from Google Maps on browser to ease the process'    value="{{ old('dorm_location_on_map') }}" >
 
                         <button type = "button" id = "find_location_button" name = 'find_location' onclick="Fetch_location_from_link()">Search & Select Location</button>
                         </div>
@@ -183,7 +183,7 @@
                             </div>                            
 
                             <div class="form-check">
-                                {{-- <input class="form-check-input" type="checkbox" name="facilities[]" value="Other" id="other_facility"> --}}
+                                <input class="form-check-input" type="checkbox" name="facilities[]" value="Other" id="other_facility">
                                 <label class="form-check-label" for="other_facility">Other</label>
                                 <input type="text" class="form-control mt-1" name="facilities_other" placeholder="Add other facilities: Use commas (,) to separate multiple entires">
                             </div>      
@@ -284,7 +284,7 @@
                                     <i class="fas fa-cloud-upload-alt"></i>
                                     <p class="mb-0">Upload Ownership Document</p>
                                     <small class="text-muted">PDF, JPG, PNG • Max 5MB</small>                                    
-                                    <input type="file" id="ownership" name="ownership_document[]" accept=".jpg,.jpeg,.png" multiple  required>
+                                    <input type="file" id="ownership" name="ownership_document[]" accept=".jpg,.jpeg,.png,.pdf" multiple  required>
                                     <div class="file-name" id="ownershipName"></div>
                                 </label>
                             </div>
