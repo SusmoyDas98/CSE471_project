@@ -15,14 +15,15 @@ class AutoSuggestionController extends Controller
     public function index()
     {
         //
-        $user_id = 12;
+        $user_id = 1;
         $all_dorms = Dorm::select("id",'name', 'location')->get();
         $genders = ['Male', 'Female'];
-        
+        $marital_status = ['Married', "Unmarried"];
         return view("search_dorm_mate", [
             "user_id"=>$user_id,
             "all_dorms"=>$all_dorms,
-            "genders"=>$genders
+            "genders"=>$genders,
+            "marital_status"=> $marital_status
         ]);
     }
 

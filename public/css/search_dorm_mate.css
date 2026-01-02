@@ -280,7 +280,7 @@ body {
     font-weight: 600;
 }
 
-.results-container {
+/* .results-container {
     max-width: 1200px;
     margin: 60px auto;
     display: grid;
@@ -288,7 +288,7 @@ body {
     gap: 30px;
     padding: 20px;
     background: transparent;
-}
+} */
 .suggested_roommate {
     background: var(--card-bg);
     border-radius: 12px;
@@ -502,6 +502,134 @@ body {
 /* Spacing between filters */
 .filter-box .row > .col-md-4 {
     margin-bottom: 12px;
+}
+.filter-box .row {
+    display: flex;          /* Make it a flex row */
+    flex-wrap: nowrap;      /* Prevent wrapping to next line */
+    gap: 1rem;              /* Space between filters */
+    align-items: flex-end;  /* Align inputs and labels nicely */
+}
+
+.filter-box .row > div {
+    flex: 1;                /* Each filter takes equal width */
+    min-width: 150px;       /* Prevent them from being too narrow */
+}
+/* ===== Suggested Roommates Table Styling ===== */
+
+/* Scrollable Table Wrapper */
+.scrollable-table-container {
+    max-height: 450px; /* fits ~4 rows */
+    margin-bottom: 55px;;
+    margin-top: -10px;;
+
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid #d1d7e0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    background: #ffffff;
+    margin-top: 20px;
+}
+
+/* Table base styles */
+.scrollable-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Table Header */
+.scrollable-table-container thead th {
+    position: sticky;
+    top: 0;
+    background-color: #1e3a8a; /* bold blue */
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 16px 20px;
+    text-align: left;
+    letter-spacing: 0.5px;
+    z-index: 10;
+}
+
+/* Table body rows */
+.scrollable-table-container tbody tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background 0.25s;
+}
+
+/* Hover row effect */
+.scrollable-table-container tbody tr:hover {
+    background-color: #eff6ff;
+}
+
+/* Cells padding */
+.scrollable-table-container td {
+    padding: 16px 20px;
+    font-size: 0.95rem;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+/* Links inside cells */
+.scrollable-table-container tbody a#id-hyperlink {
+    color: #1e3a8a;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.scrollable-table-container tbody a#id-hyperlink:hover {
+    text-decoration: underline;
+}
+
+/* Buttons inside table */
+.scrollable-table-container tbody button {
+    background: #0ea5e9;
+    border: none;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.scrollable-table-container tbody button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(14,165,233,0.3);
+}
+
+/* Scrollbar customization */
+.scrollable-table-container::-webkit-scrollbar {
+    width: 0px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 12px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-thumb {
+    background-color: none;
+    /* border-radius: 12px; */
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .scrollable-table-container td, 
+    .scrollable-table-container th {
+        padding: 14px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .scrollable-table-container td, 
+    .scrollable-table-container th {
+        padding: 12px 10px;
+        font-size: 0.85rem;
+    }
 }
 
 /* Responsive adjustments */

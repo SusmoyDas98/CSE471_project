@@ -56,8 +56,8 @@
                     <div class="col-md-4">
                         <label class="form-label">Age</label>
                         <div class="d-flex gap-2">
-                            <input type="number" id="filterAgeMin" class="form-control" placeholder="Min Age" min="0">
-                            <input type="number" id="filterAgeMax" class="form-control" placeholder="Max Age" min="0">
+                            <input type="number" id="filterAgeMin" class="form-control" placeholder="Min" min="0">
+                            <input type="number" id="filterAgeMax" class="form-control" placeholder="Max" min="0">
                         </div>
                     </div>
                 
@@ -91,6 +91,20 @@
                         @endforelse
                         </select>
                     </div>
+                    <!-- Marital Status Filter -->
+                    <div class="col-md-4">
+                        <label for="filterMaritalStatus" class="form-label">Marital Status</label>
+                        <select id="filterMaritalStatus" class="form-select">
+                            <option value="">Not Selected</option>
+                        
+                            @forelse ($marital_status as $status)
+                                <option value="{{ $status }}">{{ $status }}</option>
+                            @empty
+                                <option value="">No options available</option>
+                            @endforelse
+                        </select>
+                    </div>
+
                 
                 </div>
             
