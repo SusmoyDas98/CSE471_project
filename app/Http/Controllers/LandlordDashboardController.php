@@ -2,14 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Property; // Model (optional for future)
+use App\Models\Property;
 
 class LandlordDashboardController extends Controller
 {
     public function index()
     {
-        // No database calls for now — simply load your Blade
-        return view('landlord_dashboard');
+        // 🔹 Fetch properties from model (dummy for now)
+        $properties = Property::dummyProperties();
+
+        // Compute stats
+        $stats = [
+            'total'   => count($properties),
+            'active'  => count(array_filter($properties, fn($p) => $p['status'] === 'active')),
+            'pending' => count(array_filter($properties, fn($p) => $p['status'] === 'pending')),
+            'rented'  => count(array_filter($properties, fn($p) => $p['status'] === 'rented')),
+        ];
+
+        // Pass data to Blade
+        return view('landlord_dashboard', [
+            'properties' => $properties,
+            'stats'      => $stats,
+        ]);
     }
 }

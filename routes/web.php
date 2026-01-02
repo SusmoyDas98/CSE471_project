@@ -31,11 +31,8 @@ Route::get('/landlord/dashboard', [LandlordDashboardController::class, 'index'])
 
 
 
-Route::get('/dorm-seeker/dashboard', function () {
-    return view('dorm-seeker-dashboard');
-});
-
-Route::get('/dorm-seeker/dashboard', [DormSeekerDashboardController::class, 'index']);
+Route::get('/dorm-seeker/dashboard', [DormSeekerDashboardController::class, 'index'])
+    ->name('dormseeker.dashboard');
 
 
 Route::get('/documents/test', function () {

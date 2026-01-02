@@ -74,7 +74,7 @@
                 
                 mainContent.innerHTML = `
                     <div class="dashboard-header">
-                        <h1>Welcome back, ${userName}!</h1>
+                        <h1>Welcome back, ${userName ?? 'User'}!</h1>
                         <p>Here's your rental overview and latest community updates</p>
                     </div>
                     

@@ -9,19 +9,33 @@ class DormSeekerDashboardController extends Controller
 {
     public function index()
     {
-        // Dummy current user (model handles this)
+        /**
+         * AUTH-READY USER RESOLUTION
+         *
+         * Later:
+         *   $user = auth()->user();
+         *
+         * Now:
+         *   Dummy model data
+         */
         $user = DormSeeker::current();
 
-        $hasJoinedCommunity = $user['has_dorm'];
+        /**
+         * Community membership flag
+         * (kept array-based for now)
+         */
+        $hasJoinedCommunity = $user->has_dorm;
 
-        // 🔹 External Calendar API (Demo integration)
+        /**
+         * 🔹 External Calendar API 
+         */
         $calendarResponse = Http::get(
             'https://date.nager.at/api/v3/PublicHolidays/2025/US'
         );
 
         $holidays = $calendarResponse->successful()
             ? collect($calendarResponse->json())
-                ->take(10) // demo-friendly
+                ->take(10)
                 ->map(function ($h) {
                     return [
                         'name' => $h['localName'],
@@ -31,23 +45,14 @@ class DormSeekerDashboardController extends Controller
                 ->values()
             : [];
 
-        #$holidays = $calendarResponse->successful()
-            #? collect($calendarResponse->json())->take(5)->map(function ($h) {
-                #return [
-                    #'name' => $h['localName'],
-                    #'date' => $h['date'],
-                #];
-            #})->values()
-            #: [];
-
-
+        /**
+         * View response
+         */
         return view('dorm-seeker-dashboard', [
-            'userName'           => $user['name'],
+            'userName'           => $user->name,
             'hasJoinedCommunity' => $hasJoinedCommunity,
-            'dormData'           => $hasJoinedCommunity ? DormSeeker::dorm() : null,
+            'dormData'           => $hasJoinedCommunity ? DormSeeker::dorm($user->id) : null,
             'latestPost'         => $hasJoinedCommunity ? DormSeeker::latestCommunityPost() : null,
-
-            // 🔹 Calendar data passed to Blade
             'holidays'           => $holidays,
         ]);
     }

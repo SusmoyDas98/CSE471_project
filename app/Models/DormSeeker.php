@@ -2,21 +2,46 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
+
 class DormSeeker
 {
+    /**
+     * Get the current dorm seeker (AUTH-READY)
+     */
     public static function current()
     {
-        // Simulate a logged-in dorm seeker
-        return [
+        // FUTURE: real authenticated user
+        if (Auth::check()) {
+            return Auth::user();
+        }
+
+        // CURRENT: dummy fallback (NO AUTH YET)
+        return (object) [
             'id' => 1,
             'name' => 'Alex Johnson',
-            'has_dorm' => true, // toggle this
+            'has_dorm' => true,
         ];
     }
 
-    public static function dorm()
+    /**
+     * Dorm / lease info
+     */
+    public static function dorm($userId = null)
     {
-        return [
+        $userId = $userId ?? self::current()->id;
+
+        /*
+        FUTURE REAL QUERY (NO CHANGE NEEDED LATER):
+
+        return DormRegistrationSubmission::with('dorm.owner')
+            ->where('user_id', $userId)
+            ->where('status', 'Approved')
+            ->first();
+        */
+
+        // Dummy data
+        return (object) [
             'propertyName' => 'Sunset Residences - Apartment 3B',
             'address' => '245 Campus Drive, University District',
             'landlordName' => 'Robert Anderson',
@@ -30,9 +55,17 @@ class DormSeeker
         ];
     }
 
+    /**
+     * Latest community post
+     */
     public static function latestCommunityPost()
     {
-        return [
+        /*
+        FUTURE:
+        return Post::latest()->first();
+        */
+
+        return (object) [
             'author' => 'Emily Chen',
             'authorInitial' => 'E',
             'time' => '2 hours ago',
