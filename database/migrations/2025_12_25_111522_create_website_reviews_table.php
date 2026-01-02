@@ -11,23 +11,25 @@ return new class extends Migration {
             $table->text('message')->nullable();
             $table->integer('rating')->nullable()->check('rating BETWEEN 1 AND 5');
             $table->string('label')->nullable();
-<<<<<<< HEAD
             $table->timestamp('label_markerd_at')->nullable();
-=======
->>>>>>> afia-branch
             $table->timestamps();
         });
     }
 
     public function down(): void {
         Schema::dropIfExists('website_reviews');
-    }
-<<<<<<< HEAD
-<<<<<<< HEAD
-};
-=======
-};
->>>>>>> d81146069f60673832c6b342aacee5197e68c42b
-=======
-};
->>>>>>> afia-branch
+    }};
+
+// <<<<<<< HEAD
+// <<<<<<< HEAD
+// <<<<<<< HEAD
+// };
+// =======
+// };
+// >>>>>>> d81146069f60673832c6b342aacee5197e68c42b
+// =======
+// };
+// >>>>>>> afia-branch
+// =======
+// };
+// >>>>>>> 21fbe592305037f082c2083091047c60be3e64d2
