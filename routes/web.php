@@ -52,6 +52,8 @@ Route::post('/documents/test', [DocumentController::class, 'store'])
 Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
 Route::get('/chat/{user}', [ChatController::class, 'show'])->name('chat.show');
 Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
+Route::get('/chat/messages/{user}', [ChatController::class, 'fetchMessages'])
+    ->name('chat.fetch');
 
 
 

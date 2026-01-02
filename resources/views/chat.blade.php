@@ -53,7 +53,7 @@
             </div>
 
             <!-- MESSAGE AREA (SCROLLS) -->
-            <div class="chat-messages">
+            <div class="chat-messages" id="chatMessages">
                 @foreach($messages as $message)
                     @php $isMe = $message->sender_id == $authUserId; @endphp
 
@@ -69,7 +69,7 @@
             </div>
 
             <!-- INPUT -->
-            <form method="POST" action="{{ route('chat.send') }}" class="chat-input">
+            <form class="chat-input" onsubmit="sendMessage(event)">
                 @csrf
                 <input type="hidden" name="receiver_id" value="{{ $selectedUser->id }}">
                 <input type="text" name="message" placeholder="Type your message..." required>
@@ -88,6 +88,90 @@
 
     </div>
 </div>
+
+<script>
+    const authUserId = {{ $authUserId }};
+    const selectedUserId = {{ $selectedUser ? $selectedUser->id : 'null' }};
+    const chatBox = document.getElementById('chatMessages');
+
+    function scrollToBottom() {
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    function renderMessages(messages) {
+        if (!chatBox) return;
+
+        chatBox.innerHTML = '';
+
+        messages.forEach(msg => {
+            const isMe = msg.sender_id == authUserId;
+
+            const row = document.createElement('div');
+            row.className = 'chat-row ' + (isMe ? 'me' : 'them');
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble ' + (isMe ? 'me' : 'them');
+
+            bubble.innerHTML = `
+                <p>${msg.message}</p>
+                <span class="chat-time">
+                    ${new Date(msg.sent_at).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}
+                </span>
+            `;
+
+            row.appendChild(bubble);
+            chatBox.appendChild(row);
+        });
+
+        scrollToBottom();
+    }
+
+    function fetchMessages() {
+        if (!selectedUserId) return;
+
+        fetch(`/chat/messages/${selectedUserId}`)
+            .then(response => response.json())
+            .then(data => renderMessages(data))
+            .catch(error => console.error(error));
+    }
+
+    function sendMessage(e) {
+        e.preventDefault();
+
+        const input = document.querySelector('input[name="message"]');
+        const message = input.value.trim();
+        if (!message) return;
+
+        fetch("{{ route('chat.send') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                receiver_id: selectedUserId,
+                message: message
+            })
+        }).then(() => {
+            input.value = '';
+            fetchMessages(); // instant refresh after sending
+        });
+    }
+
+    // Start polling every 2 seconds
+    if (selectedUserId) {
+        fetchMessages();
+        setInterval(fetchMessages, 2000);
+    }
+</script>
+
+
+
 
 </body>
 </html>

@@ -8,23 +8,13 @@ use App\Models\Message;
 
 class ChatController extends Controller
 {
-    /**
-     * Fake authenticated user ID for testing
-     * CHANGE THIS VALUE to test as different users
-     *
-     * Valid IDs (from your DB): 12, 13, 14, 15, 16, 17
-     */
     private $authUserId;
 
     public function __construct()
     {
-        
-        $this->authUserId = 14; // e.g. 12 = Hiroshi, 13 = Sarah, etc.
+        $this->authUserId = 14; // fake auth user for testing
     }
 
-    /**
-     * Chat landing page (no user selected)
-     */
     public function index()
     {
         $users = User::where('id', '!=', $this->authUserId)->get();
@@ -37,9 +27,6 @@ class ChatController extends Controller
         ]);
     }
 
-    /**
-     * Show chat with a specific user
-     */
     public function show($userId)
     {
         $users = User::where('id', '!=', $this->authUserId)->get();
@@ -53,7 +40,7 @@ class ChatController extends Controller
                 $query->where('sender_id', $userId)
                       ->where('receiver_id', $this->authUserId);
             })
-            ->orderBy('sent_at')
+            ->orderBy('id') // Use ID instead of sent_at
             ->get();
 
         return view('chat', [
@@ -64,9 +51,6 @@ class ChatController extends Controller
         ]);
     }
 
-    /**
-     * Send a message
-     */
     public function send(Request $request)
     {
         $request->validate([
@@ -83,5 +67,25 @@ class ChatController extends Controller
         ]);
 
         return redirect()->route('chat.show', $request->receiver_id);
+    }
+
+    // ✅ Add this inside the class
+    /**
+     * Fetch messages between auth user and selected user (JSON)
+     */
+    public function fetchMessages($userId)
+    {
+        $messages = Message::where(function ($query) use ($userId) {
+                $query->where('sender_id', $this->authUserId)
+                      ->where('receiver_id', $userId);
+            })
+            ->orWhere(function ($query) use ($userId) {
+                $query->where('sender_id', $userId)
+                      ->where('receiver_id', $this->authUserId);
+            })
+            ->orderBy('id') // works without sent_at column
+            ->get();
+
+        return response()->json($messages);
     }
 }
