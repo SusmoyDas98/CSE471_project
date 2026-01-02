@@ -18,9 +18,9 @@ return new class extends Migration
             $table->longText('google_token')->nullable();
             $table->longText('google_refresh_token')->nullable();
 
-            $table->string('password')->nullable();
+            $table->string('password');
 
-            $table->enum('role', ['Dorm Seeker', 'Dorm Owner', 'Admin'])->nullable();
+            $table->enum('role', ['Dorm Seeker', 'Dorm Owner', 'Admin']);
 
             $table->enum('subscription_type', ['Free', 'Premium'])
                   ->default('Free');

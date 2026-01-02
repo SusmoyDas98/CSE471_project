@@ -40,6 +40,14 @@
             box-shadow: 0 6px 20px rgba(14, 165, 233, 0.15);
         }
         
+        .notification-card.clickable {
+            cursor: pointer;
+        }
+        
+        .notification-card.clickable:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.02), rgba(59, 130, 246, 0.02));
+        }
+        
         .notification-card.unread {
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.05), rgba(59, 130, 246, 0.05));
             border-left-color: var(--primary);
@@ -129,7 +137,22 @@
             </div>
         @else
             @foreach($notifications as $notification)
-                <div class="notification-card {{ $notification->is_read ? '' : 'unread' }}">
+                @php
+                    $isClickable = false;
+                    $route = null;
+                    
+                    // Check if notification should be clickable
+                    if (Auth::user()->role === 'Dorm Owner' && $notification->type === 'application') {
+                        $isClickable = true;
+                        $route = route('applications.received');
+                    } elseif (Auth::user()->role === 'Admin' && $notification->type === 'dorm_registration') {
+                        $isClickable = true;
+                        $route = route('admin.pending.dorms');
+                    }
+                @endphp
+                
+                <div class="notification-card {{ $notification->is_read ? '' : 'unread' }} {{ $isClickable ? 'clickable' : '' }}" 
+                     @if($isClickable) onclick="window.location.href='{{ $route }}'" @endif>
                     <div class="d-flex gap-3">
                         <div class="notification-icon {{ $notification->type }}">
                             @if($notification->type == 'application')
@@ -155,9 +178,9 @@
                                     </small>
                                 </div>
                                 
-                                <div class="d-flex gap-2">
+                                <div class="d-flex gap-2" onclick="event.stopPropagation();">
                                     @if(!$notification->is_read)
-                                        <form method="POST" action="{{ route('notifications.read', $notification->id) }}">
+                                        <form method="POST" action="{{ route('notifications.read', $notification->id) }}" onclick="event.stopPropagation();">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-primary" title="Mark as read">
                                                 <i class="fas fa-check"></i>
@@ -165,7 +188,7 @@
                                         </form>
                                     @endif
                                     
-                                    <form method="POST" action="{{ route('notifications.delete', $notification->id) }}">
+                                    <form method="POST" action="{{ route('notifications.delete', $notification->id) }}" onclick="event.stopPropagation();">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">

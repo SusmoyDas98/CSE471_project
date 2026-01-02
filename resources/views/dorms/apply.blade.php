@@ -82,14 +82,26 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('dorms.apply.store', $dorms->id) }}">
+            <form method="POST" action="{{ route('dorms.apply.store', $dorms->id) }}" enctype="multipart/form-data">
                 @csrf
-                
+                <div class="mb-3">
+                    <label class="form-label fw-bold"><i class="fas fa-id-card me-2 text-primary"></i>Student ID (upload)</label>
+                    <input type="file" name="Student_id" class="form-control" required accept="image/*,application/pdf">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold"><i class="fas fa-id-badge me-2 text-primary"></i>Government ID (upload)</label>
+                    <input type="file" name="Government_id" class="form-control" required accept="image/*,application/pdf">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold"><i class="fas fa-user-circle me-2 text-primary"></i>Personal Photo</label>
+                    <input type="file" name="Personal_photo" class="form-control" required accept="image/*">
+                </div>
+
                 <div class="mb-4">
-                    <label for="message" class="form-label fw-bold">
-                        <i class="fas fa-comment-dots me-2 text-primary"></i>Why do you want to live here?
-                    </label>
-                    <textarea class="form-control" id="message" name="message" rows="6" placeholder="Tell the owner about yourself and why you'd be a great tenant..." required>{{ old('message') }}</textarea>
+                    <label for="Reference" class="form-label fw-bold"><i class="fas fa-comment-dots me-2 text-primary"></i>Reference / Message (optional)</label>
+                    <textarea class="form-control" id="Reference" name="Reference" rows="4" placeholder="Any message or reference you'd like the owner to see">{{ old('Reference') }}</textarea>
                 </div>
                 
                 <div class="text-center">

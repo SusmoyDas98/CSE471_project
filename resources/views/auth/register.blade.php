@@ -187,6 +187,7 @@
                         <option value="" disabled selected hidden>Select your role</option>
                         <option value="Dorm Seeker" {{ old('role') == 'Dorm Seeker' ? 'selected' : '' }}>Dorm Seeker</option>
                         <option value="Dorm Owner" {{ old('role') == 'Dorm Owner' ? 'selected' : '' }}>Dorm Owner</option>
+                        <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
                     </select>
                 </div>
 

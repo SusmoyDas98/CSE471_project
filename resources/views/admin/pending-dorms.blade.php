@@ -127,17 +127,26 @@ body {
         <p class="text-secondary">No pending dorm registrations to review</p>
     </div>
 @else
-    @foreach($pendingDorms as $dorm)
+    @foreach($pendingDorms as $dorms)
         <div class="dorm-card">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h3 class="mb-2">{{ $dorms->dorm_name }}</h3>
                     <p class="mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Location:</strong> {{ $dorms->dorm_location }}</p>
                     <p class="mb-1"><i class="fas fa-door-open me-2 text-primary"></i><strong>Rooms:</strong> {{ $dorms->number_of_rooms }}</p>
-                    <p class="mb-1"><i class="fas fa-bed me-2 text-primary"></i><strong>Room Types:</strong> {{ $dorms->room_types }}</p>
-                    <p class="mb-1"><i class="fas fa-user me-2 text-primary"></i><strong>Owner:</strong> {{ $dorms->dorm_owner_name }} ({{ $dorms->dorm_owner_email }})</p>
+                    @php
+                        $room_types_display = '';
+                        if (is_array($dorms->room_types)) {
+                            $room_types_display = implode(', ', $dorms->room_types);
+                        } elseif (!empty($dorms->room_types)) {
+                            $decoded = json_decode($dorms->room_types, true);
+                            $room_types_display = is_array($decoded) ? implode(', ', $decoded) : $dorms->room_types;
+                        }
+                    @endphp
+                    <p class="mb-1"><i class="fas fa-bed me-2 text-primary"></i><strong>Room Types:</strong> {{ $room_types_display }}</p>
+                    <p class="mb-1"><i class="fas fa-user me-2 text-primary"></i><strong>Owner:</strong> {{ $dorms->dorm_owner_name }}</p>
                     <small class="text-muted">
-                        <i class="fas fa-clock me-1"></i>Submitted {{ \Carbon\Carbon::parse($dorm->submitted_at)->diffForHumans() }}
+                        <i class="fas fa-clock me-1"></i>Submitted {{ \Carbon\Carbon::parse($dorms->created_at)->diffForHumans() }}
                     </small>
                 </div>
 

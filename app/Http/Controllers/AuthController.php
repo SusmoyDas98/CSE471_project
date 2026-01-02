@@ -31,7 +31,7 @@ class AuthController extends Controller
                 'confirmed',
                 'regex:/^\S+$/',
             ],
-            'role' => 'required|in:Dorm Seeker,Dorm Owner',
+            'role' => 'required|in:Dorm Seeker,Dorm Owner,Admin',
         ],
         [
             'password.regex' => 'Password must not contain spaces.',

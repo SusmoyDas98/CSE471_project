@@ -18,13 +18,14 @@ return new class extends Migration
             $table->integer('age')->nullable();
 
             $table->enum('gender', ['Male', 'Female'])->nullable();
-
+            $table->string('contact_number')->nullable();
             $table->text('preferences')->nullable();
             $table->text('hobbies')->nullable();
             $table->enum("student", ["Yes", "No"])->nullable()->default("No");
             $table->string('profession')->nullable();
             $table->string('marital_status', 50)->nullable();
-
+            
+            $table->foreignId('dorm_id')->nullable()->constrained('dorms')->onDelete('set null');
             $table->timestamps();
         });
     }

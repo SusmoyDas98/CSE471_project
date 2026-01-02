@@ -1,4 +1,3 @@
-
 function openModal() {
     document.getElementById('dormModal').classList.add('active');
 }

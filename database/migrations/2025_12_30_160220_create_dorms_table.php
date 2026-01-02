@@ -16,15 +16,13 @@ return new class extends Migration
                   ->onDelete('cascade');
 
             $table->string('name', 100);
+            $table->string('dorm_hotline');
 
             $table->string('location')->nullable();
-
-            // ✅ ADDED FIELDS (after location)
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
-            $table->enum('student_only', ['Yes', 'No'])
-                  ->nullable()
-                  ->default('No');
+            $table->enum('student_only', ['Yes', 'No'])->nullable()->default('No');
+
             $table->string('owner_passport')->nullable();
             $table->string('property_document')->nullable();
             $table->text('dorm_images')->nullable();
@@ -32,17 +30,16 @@ return new class extends Migration
             $table->integer('number_of_rooms')->nullable();
             $table->string('room_types')->nullable();
 
-            $table->enum('status', ['Pending', 'Approved', 'Declined'])
-                  ->default('Pending');
+            $table->enum('status', ["Running", "Closed"])->default('Running');
 
             $table->text('dorm_review')->nullable();
             $table->decimal('dorm_rating', 3, 2)->default(0.00);
 
-            $table->string('gender_preference', 20)->nullable();
+            $table->enum("gender_preference", ["Male", "Female", "Not Gender Specified"])->default("Not Gender Specified");
             $table->decimal('rent', 10, 2)->default(0.00);
 
             $table->text('facilities')->nullable();
-            $table->string('expected_marital_status', 50)->nullable();
+            $table->enum('expected_marital_status', ["Married", "Unmarried", "Not Specified"])->default("Not Specified");
 
             $table->timestamps();
         });

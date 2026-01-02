@@ -9,12 +9,19 @@ class DormApplication extends Model
 {
     use HasFactory;
 
-    // Fillable fields for mass assignment
+    // Table name (migration uses `applications`)
+    protected $table = 'applications';
+
+    // Fillable fields for mass assignment (match migration)
     protected $fillable = [
         'dorm_id',
         'user_id',
         'status',
-        'message',
+        'applied_at',
+        'Student_id',
+        'Government_id',
+        'Personal_photo',
+        'Reference',
     ];
 
     // Relationship to Dorm

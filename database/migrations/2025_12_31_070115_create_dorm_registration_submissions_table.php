@@ -9,13 +9,13 @@ return new class extends Migration {
             $table->id();
             $table->string('dorm_owner_name');
             $table->foreignId('owner_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('phone_number');
+            $table->string('dorm_hotline');
             $table->string('dorm_name');
             $table->string('dorm_location');
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->integer('number_of_rooms')->nullable();
-            $table->enum('gender_preference', ['Male', 'Female', 'Not Gender Specified'])->nullable();
+            $table->enum('gender_preference', ['Male', 'Female', 'Not Gender Specified']);
             $table->text('facilities')->nullable();
             $table->text('room_types')->nullable();
             $table->string('student_only')->nullable();

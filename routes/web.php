@@ -140,8 +140,11 @@ Route::middleware('auth')->group(function () {
 
 // Dorm Registration Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/register-dorm', [App\Http\Controllers\DormRegistrationController::class, 'create'])->name('dorm.register');
-    Route::post('/register-dorm', [App\Http\Controllers\DormRegistrationController::class, 'store'])->name('dorm.register.store');
+    Route::get('/dorm_reg_view', [DormRegistrationController::class, 'index'])->name('dorm_reg_view.index');
+    Route::get('/dorm_reg_admin_view', [DormRegistrationController::class, 'admin_view'])->name('dorm_reg_admin_view');
+    Route::get('/dorm_reg', [DormRegistrationController::class, 'user_view'])->name('dorm_reg');
+    Route::post("/dorm_reg/approve/{id}",[DormRegistrationController::class, "approve"])->name("dorm_reg.approve");
+    Route::post("/dorm_reg/decline/{id}",[DormRegistrationController::class, "decline"])->name("dorm_reg.decline");
 });
 
 // Admin Routes
@@ -151,9 +154,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/dorms/{id}/decline', [App\Http\Controllers\DormRegistrationController::class, 'decline'])->name('admin.dorm.decline');
 });
 
-// Dorm Owner Approve/Decline Application Routes
-Route::post('/applications/{id}/approve', [DormRegistrationController::class, 'approveApplication'])->name('applications.approve');
-Route::post('/applications/{id}/decline', [DormRegistrationController::class, 'declineApplication'])->name('applications.decline');
+// Dorm Owner Approve/Decline Application Routes (handled by DormApplicationController)
+Route::post('/applications/{id}/approve', [App\Http\Controllers\DormApplicationController::class, 'approve'])->name('applications.approve')->middleware('auth');
+Route::post('/applications/{id}/decline', [App\Http\Controllers\DormApplicationController::class, 'decline'])->name('applications.decline')->middleware('auth');
+
+// Serve application files securely
+Route::get('/applications/{id}/file/{type}', [App\Http\Controllers\DormApplicationController::class, 'serveDocument'])->name('applications.file')->middleware('auth');
 
 
 // Dorm Search Routes
@@ -162,3 +168,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/search-dorms/manual', [App\Http\Controllers\DormSearchController::class, 'manualSearch'])->name('dorms.search.manual');
     Route::post('/search-dorms/ai', [App\Http\Controllers\DormSearchController::class, 'aiSearch'])->name('dorms.search.ai');
 });
+
+Route::get('/submitted_dorm/{id}', [DormRegistrationController::class, 'submitted_dorm_view'])->name('submitted_dorm_view');
+
+Route::resource('dorm_registration', DormRegistrationController::class);

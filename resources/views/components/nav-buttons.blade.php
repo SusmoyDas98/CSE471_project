@@ -171,7 +171,7 @@
     // Update count on page load
     updateNotificationCount();
 
-    // Update count every 30 seconds
-    setInterval(updateNotificationCount, 30000);
+    // Update count every 2 seconds
+    setInterval(updateNotificationCount, 2000);
 </script>
 @endauth

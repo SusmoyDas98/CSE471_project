@@ -104,6 +104,7 @@
                     <option value="" disabled selected>Select your role</option>
                     <option value="Dorm Seeker">Dorm Seeker</option>
                     <option value="Dorm Owner">Dorm Owner</option>
+                    <option value="Admin">Admin</option>
                 </select>
             </div>
 

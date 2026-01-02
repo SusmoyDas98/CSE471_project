@@ -126,7 +126,7 @@
                     <div class="card p-4">
                         <h3><i class="fas fa-plus-circle text-primary me-2"></i>Register Dorm</h3>
                         <p>List your dorm on the platform</p>
-                        <a href="{{ route('dorm.register') }}" class="btn btn-primary">Register Dorm</a>
+                        <a href="{{ route('dorm_reg') }}" class="btn btn-primary">Register Dorm</a>
                     </div>
                 </div>
                 

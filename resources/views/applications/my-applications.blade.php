@@ -86,8 +86,21 @@
                         </span>
                     </div>
                     
-                    <p class="mb-2"><strong>Your Message:</strong></p>
-                    <p class="text-secondary mb-3">{{ $application->message }}</p>
+                    <p class="mb-2"><strong>Your Reference / Message:</strong></p>
+                    <p class="text-secondary mb-3">{{ $application->Reference ?? '—' }}</p>
+
+                    <p class="mb-2"><strong>Documents:</strong></p>
+                    <p class="text-secondary mb-3">
+                        @if($application->Student_id)
+                            <a href="{{ route('applications.file', ['id' => $application->id, 'type' => 'student']) }}" target="_blank">Student ID</a>
+                        @endif
+                        @if($application->Government_id)
+                            &nbsp;|&nbsp; <a href="{{ route('applications.file', ['id' => $application->id, 'type' => 'government']) }}" target="_blank">Government ID</a>
+                        @endif
+                        @if($application->Personal_photo)
+                            &nbsp;|&nbsp; <a href="{{ route('applications.file', ['id' => $application->id, 'type' => 'photo']) }}" target="_blank">Photo</a>
+                        @endif
+                    </p>
                     
                     <small class="text-muted">
                         <i class="fas fa-clock me-1"></i>

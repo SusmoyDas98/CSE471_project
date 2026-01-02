@@ -61,8 +61,21 @@
                                 <i class="fas fa-user me-2 text-primary"></i>
                                 <strong>Applicant:</strong> {{ $application->applicant_name }} ({{ $application->applicant_email }})
                             </p>
-                            <p class="mb-2"><strong>Message:</strong></p>
-                            <p class="text-secondary mb-2">{{ $application->message }}</p>
+                            <p class="mb-2"><strong>Reference / Message:</strong></p>
+                            <p class="text-secondary mb-2">{{ $application->Reference ?? '—' }}</p>
+
+                            <p class="mb-2"><strong>Documents:</strong></p>
+                            <p class="text-secondary mb-2">
+                                @if($application->Student_id)
+                                    <a href="{{ route('applications.file', ['id' => $application->id, 'type' => 'student']) }}" target="_blank">Student ID</a>
+                                @endif
+                                @if($application->Government_id)
+                                    &nbsp;|&nbsp; <a href="{{ route('applications.file', ['id' => $application->id, 'type' => 'government']) }}" target="_blank">Government ID</a>
+                                @endif
+                                @if($application->Personal_photo)
+                                    &nbsp;|&nbsp; <a href="{{ route('applications.file', ['id' => $application->id, 'type' => 'photo']) }}" target="_blank">Photo</a>
+                                @endif
+                            </p>
                             <small class="text-muted">
                                 <i class="fas fa-clock me-1"></i>{{ \Carbon\Carbon::parse($application->created_at)->diffForHumans() }}
                             </small>
@@ -72,7 +85,7 @@
         {{ ucfirst($application->status) }}
     </span>
 
-    @if($application->status === 'pending')
+    @if(strtolower($application->status) === 'pending')
         <div class="d-flex justify-content-end gap-2 mt-2">
 
             <form method="POST" action="{{ route('applications.approve', $application->id) }}">

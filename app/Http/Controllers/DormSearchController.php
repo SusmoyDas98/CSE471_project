@@ -22,23 +22,28 @@ class DormSearchController extends Controller
         $roomTypes = DB::table('dorms')
             ->whereNotNull('room_types')
             ->pluck('room_types')
-            ->flatMap(fn($v) => array_map('trim', explode(',', $v)))
+            ->flatMap(function ($value) {
+                return json_decode($value, true) ?? [];
+            })
             ->unique()
             ->sort()
             ->values();
 
         $genderPreferences = DB::table('dorms')
             ->whereNotNull('gender_preference')
+            ->where('gender_preference', '!=', '')
             ->pluck('gender_preference')
-            ->flatMap(fn($v) => array_map('trim', explode(',', $v)))
             ->unique()
             ->sort()
             ->values();
 
+
         $facilities = DB::table('dorms')
             ->whereNotNull('facilities')
             ->pluck('facilities')
-            ->flatMap(fn($v) => array_map('trim', explode(',', $v)))
+            ->flatMap(function ($value) {
+                return json_decode($value, true) ?? [];
+            })
             ->unique()
             ->sort()
             ->values();
@@ -51,88 +56,80 @@ class DormSearchController extends Controller
         ));
     }
 
+
     // ================= MANUAL SEARCH =================
     public function manualSearch(Request $request)
     {
-        $query = DB::table('dorms')
-            ->where('status', 'Approved');
-
-        if ($request->filled('dorm_name')) {
-            $query->where('name', 'LIKE', '%' . $request->dorm_name . '%');
-        }
-
-        if ($request->filled('location')) {
-            $query->where('location', $request->location);
-        }
-
-        if ($request->filled('price_min')) {
-            $query->where('rent', '>=', $request->price_min);
-        }
-
-        if ($request->filled('price_max')) {
-            $query->where('rent', '<=', $request->price_max);
-        }
-
-        if ($request->filled('room_types')) {
-            // require all selected room types to be present (match tokens, not substrings)
-            $query->where(function ($q) use ($request) {
-                $first = true;
-                foreach ($request->room_types as $type) {
-                    $t = strtolower(trim($type));
-                    $token = str_replace(' ', '', $t);
-                    if ($first) {
-                        $q->whereRaw('FIND_IN_SET(?, REPLACE(LOWER(room_types), " ", ""))', [$token]);
-                        $first = false;
-                    } else {
-                        $q->orWhereRaw('FIND_IN_SET(?, REPLACE(LOWER(room_types), " ", ""))', [$token]);
-                    }
-                }
-            });
-        }
-
-        if ($request->filled('gender_preference')) {
-            $query->where(function ($q) use ($request) {
-                $first = true;
-                foreach ($request->gender_preference as $gender) {
-                    $g = strtolower(trim($gender));
-                    $token = str_replace(' ', '', $g);
-                    if ($first) {
-                        $q->whereRaw('FIND_IN_SET(?, REPLACE(LOWER(gender_preference), " ", ""))', [$token]);
-                        $first = false;
-                    } else {
-                        $q->orWhereRaw('FIND_IN_SET(?, REPLACE(LOWER(gender_preference), " ", ""))', [$token]);
-                    }
-                }
-            });
-        }
-
-        if ($request->filled('facilities')) {
-            $query->where(function ($q) use ($request) {
-                $first = true;
-                foreach ($request->facilities as $facility) {
-                    $f = strtolower(trim($facility));
-                    $token = str_replace(' ', '', $f);
-                    if ($first) {
-                        $q->whereRaw('FIND_IN_SET(?, REPLACE(LOWER(facilities), " ", ""))', [$token]);
-                        $first = false;
-                    } else {
-                        $q->orWhereRaw('FIND_IN_SET(?, REPLACE(LOWER(facilities), " ", ""))', [$token]);
-                    }
-                }
-            });
-        }
-
-        $dorms = $query
+        $dorms = DB::table('dorms')
+            ->where('status', 'Running')
             ->select('dorms.*', 'dorm_rating as avg_rating')
-            ->orderByDesc('avg_rating')
             ->get();
+
+        $filtered = $dorms->filter(function ($dorm) use ($request) {
+
+            // Dorm name
+            if ($request->filled('dorm_name') &&
+                !str_contains(strtolower($dorm->name), strtolower($request->dorm_name))) {
+                return false;
+            }
+
+            // Location
+            if ($request->filled('location') && $dorm->location !== $request->location) {
+                return false;
+            }
+
+            // Price range filter
+            $dormRent = (float) ($dorm->rent ?? 0);
+            
+            if ($request->filled('price_min')) {
+                $priceMin = (float) $request->price_min;
+                if ($dormRent < $priceMin) {
+                    return false;
+                }
+            }
+
+            if ($request->filled('price_max')) {
+                $priceMax = (float) $request->price_max;
+                if ($dormRent > $priceMax) {
+                    return false;
+                }
+            }
+
+            // Room types (JSON)
+            if ($request->filled('room_types')) {
+                $roomTypes = json_decode($dorm->room_types, true) ?? [];
+                if (!array_intersect($request->room_types, $roomTypes)) {
+                    return false;
+                }
+            }
+
+            // Gender preference (enum, supports multiple selections)
+            if ($request->filled('gender_preference')) {
+                $selectedGenders = is_array($request->gender_preference) ? $request->gender_preference : [$request->gender_preference];
+                if (!in_array($dorm->gender_preference, $selectedGenders, true)) {
+                    return false;
+                }
+            }
+
+
+            // Facilities (JSON)
+            if ($request->filled('facilities')) {
+                $facilities = json_decode($dorm->facilities, true) ?? [];
+                if (!array_intersect($request->facilities, $facilities)) {
+                    return false;
+                }
+            }
+
+            return true;
+        })->values();
 
         return response()->json([
             'success' => true,
-            'dorms' => $dorms,
+            'dorms' => $filtered,
             'search_type' => 'manual'
         ]);
     }
+
 
     // ================= AI SEARCH =================
     public function aiSearch()
@@ -141,63 +138,50 @@ class DormSearchController extends Controller
             return response()->json(['success' => false, 'message' => 'Login required'], 401);
         }
 
+        // Fetch user profile
         $profile = DB::table('user_profile_details')
             ->where('user_id', Auth::id())
             ->first();
 
-        if (!$profile || !$profile->gender || !$profile->marital_status || !$profile->profession) {
+        if (!$profile || !$profile->gender || !$profile->marital_status || !$profile->student) {
             return response()->json(['success' => false, 'message' => 'Complete profile first'], 400);
         }
 
-        $userProfessions = array_filter(array_map(fn($p) => strtolower(trim($p)), explode(',', $profile->profession)));
-        $totalPossibleScore = 1 + 1 + count($userProfessions);
+        // Total possible score = 3 (gender + marital_status + student)
+        $totalPossibleScore = 3;
 
+        // Get all running dorms
         $dorms = DB::table('dorms')
-            ->where('status', 'Approved')
+            ->where('status', 'Running')
             ->select('dorms.*', 'dorm_rating as avg_rating')
             ->get();
 
-        $dorms->each(function ($dorms) use ($profile, $userProfessions, $totalPossibleScore) {
+        // Calculate match_percentage for each dorm
+        $dorms->each(function ($dorm) use ($profile, $totalPossibleScore) {
+
             $matchingScore = 0;
 
-            $userGender = strtolower(trim($profile->gender));
-            $userMarital = strtolower(trim($profile->marital_status));
-
-            $dormGenderPrefs = array_filter(array_map(fn($g) => strtolower(trim($g)), explode(',', $dorms->gender_preference ?? '')));
-            if (!empty($dormGenderPrefs) && in_array($userGender, $dormGenderPrefs, true)) {
+            // Compare gender
+            if (strtolower($dorm->gender_preference) === strtolower($profile->gender)) {
                 $matchingScore += 1;
             }
 
-            $dormMaritalPrefs = array_filter(array_map(fn($m) => strtolower(trim($m)), explode(',', $dorms->marital_status ?? '')));
-            if (!empty($dormMaritalPrefs) && in_array($userMarital, $dormMaritalPrefs, true)) {
+            // Compare expected marital status
+            if (strtolower($dorm->expected_marital_status) === strtolower($profile->marital_status)) {
                 $matchingScore += 1;
             }
 
-            $dormProfessions = array_filter(array_map(fn($p) => strtolower(trim($p)), explode(',', $dorms->profession ?? '')));
-            $matches = array_intersect($userProfessions, $dormProfessions);
-            $matchingScore += count($matches);
+            // Compare student_only
+            if (strtolower($dorm->student_only) === strtolower($profile->student)) {
+                $matchingScore += 1;
+            }
 
-            $dorms->match_percentage = $totalPossibleScore > 0 ? (int) round(($matchingScore * 100) / $totalPossibleScore) : 0;
+            // Calculate match percentage
+            $dorm->match_percentage = (int) round(($matchingScore * 100) / $totalPossibleScore);
         });
 
-        // Decide results based on counts of matching tiers (>=80, >=50).
-        $highMatches = $dorms->where('match_percentage', '>=', 80)->sortByDesc('match_percentage');
-        $midMatches = $dorms->where('match_percentage', '>=', 50)->sortByDesc('match_percentage');
-        $anyMatches = $dorms->where('match_percentage', '>', 0)->sortByDesc('match_percentage');
-
-        if ($highMatches->count() >= 3) {
-            // plenty of high matches -> show best 3 high matches
-            $result = $highMatches->take(3)->values();
-        } elseif ($midMatches->count() >= 6) {
-            // enough mid-range matches -> show best 6 among >=50%
-            $result = $midMatches->take(6)->values();
-        } elseif ($anyMatches->count() > 0) {
-            // some matches exist but not enough for the above thresholds -> show top 10 by match
-            $result = $anyMatches->take(10)->values();
-        } else {
-            // no matches at all -> fall back to top rated dorms
-            $result = $dorms->sortByDesc('avg_rating')->take(10)->values();
-        }
+        // Return all dorms with match_percentage, sorted by match_percentage descending
+        $result = $dorms->sortByDesc('match_percentage')->values();
 
         return response()->json([
             'success' => true,
