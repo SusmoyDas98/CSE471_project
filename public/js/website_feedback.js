@@ -89,12 +89,19 @@ if (reviewForm) {
 
         // prepend the new review (server should return created review)
         const review = data.review;
+<<<<<<< HEAD
         console.log(review);
+=======
+>>>>>>> afia-branch
         const reviewsList = document.getElementById('reviewsList');
         const placeholder = reviewsList.querySelector('p');
         if (placeholder && placeholder.textContent.includes('No reviews yet')) placeholder.remove();
 
+<<<<<<< HEAD
         const name = escapeHtml(review.username || 'Anonymous');
+=======
+        const name = escapeHtml(review.user_name || 'Anonymous');
+>>>>>>> afia-branch
         const message = escapeHtml(review.message || review.review_text || review_text);
         const starsCount = parseInt(review.rating || rating, 10) || 0;
         let starsHtml = '';
@@ -285,9 +292,15 @@ document.addEventListener('click', function (event) {
                     
                     <div class="review-header">
                         <div class="reviewer-info">
+<<<<<<< HEAD
                             <div class="reviewer-avatar">${review.username?.charAt(0) ?? 'U'}</div>
                             <div class="reviewer-details">
                                 <h4>${review.username}</h4>
+=======
+                            <div class="reviewer-avatar">${review.user_name?.charAt(0) ?? 'U'}</div>
+                            <div class="reviewer-details">
+                                <h4>${review.user_name}</h4>
+>>>>>>> afia-branch
                             </div>
                         </div>
 
@@ -364,14 +377,41 @@ document.addEventListener('click', function(event) {
                         </button>`;
                 }
 
+<<<<<<< HEAD
                
                 console.log(review);
+=======
+                // let deleteButtonHtml = '';
+                // if (review.label === 'Deleted') {
+                //     deleteButtonHtml = `
+                //         <button class="btn btn-outline-danger btn-sm delete" 
+                //                 id="deleteSelected-${review.id}" 
+                //                 data-message-id="${review.id}" 
+                //                 data-state="deleted">
+                //             <i class='fas fa-undo'></i> Restore
+                //         </button>`;
+                // } else {
+                //     deleteButtonHtml = `
+                //         <button class="btn btn-outline-danger btn-sm delete" 
+                //                 id="deleteSelected-${review.id}" 
+                //                 data-message-id="${review.id}" 
+                //                 data-state="visible">
+                //             <i class='fas fa-trash'></i> Delete Selected
+                //         </button>`;
+                // }
+
+>>>>>>> afia-branch
                 const reviewHtml = `
                 <div class="review-card" id="hidden_review-${review.id}">
                     <div class="review-header">
                         <div class="reviewer-info">
+<<<<<<< HEAD
                             <div class="reviewer-avatar">${review.username.charAt(0) || 'U'}</div>
                             <div class="reviewer-details"><h4>${review.username}</h4></div>
+=======
+                            <div class="reviewer-avatar">${review.user_name.charAt(0) || 'U'}</div>
+                            <div class="reviewer-details"><h4>${review.user_name}</h4></div>
+>>>>>>> afia-branch
                         </div>
                         <div class="review-rating">${'★'.repeat(review.rating)}</div>
                     </div>

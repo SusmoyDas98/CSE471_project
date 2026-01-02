@@ -116,7 +116,11 @@
                         <div class="reviewer-info">
                             <div class="reviewer-avatar">S</div>
                             <div class="reviewer-details">
+<<<<<<< HEAD
                                 <h4>{{ $user_map[$review->user_id] ?? 'Unknown' }}</h4>
+=======
+                                <h4>{{$review->user_name}}</h4>
+>>>>>>> afia-branch
                             </div>
                         </div>
                         <div class="review-rating">

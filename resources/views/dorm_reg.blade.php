@@ -70,6 +70,7 @@
 
         
         <div class="form-container">
+<<<<<<< HEAD
             
 
 
@@ -79,6 +80,13 @@
                 
             {{-- @else  --}}
 
+=======
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
+                </div>
+            @else 
+>>>>>>> afia-branch
             <div class="form-header">
                 <h2>Register Your Property</h2>
                 <p>Complete the form below to list your premium dorm on our platform</p>
@@ -138,13 +146,21 @@
 
 
                         </div>
+                        <div class="col-md-12 mb-4">
+                            <label for="dormLocation" class="form-label">Location *</label>
+                            <input type="text" class="form-control" id="dormLocation" name="dorm_location" placeholder="City, street, or landmark" required>
+                        </div>
                         <div class="col-md-6 mb-4">
                             <label for="numRooms" class="form-label">Available Rooms *</label>
                             <input type="number" class="form-control" id="numRooms" name="num_rooms" placeholder="e.g., 25" min="1"   value="{{ old('num_rooms') }}"  required>
                         </div>
                         <div class="col-md-6 mb-4">
                             <label for="roomTypes" class="form-label">Room Categories *</label>
+<<<<<<< HEAD
                             <input type="text" class="form-control" id="roomTypes" name="room_types[]" placeholder="Single, Double, Suite, Deluxe"    value="{{ old('room_types[]') }}"  required>
+=======
+                            <input type="text" class="form-control" id="roomTypes" name="room_types[]" placeholder="Single, Double, Suite, Deluxe" required>
+>>>>>>> afia-branch
                             <small class="text-muted">Separate categories with commas</small>
                         </div>
                         <!-- Facilities (Checkboxes) -->

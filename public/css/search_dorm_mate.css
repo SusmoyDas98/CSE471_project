@@ -280,7 +280,11 @@ body {
     font-weight: 600;
 }
 
+<<<<<<< HEAD
 /* .results-container {
+=======
+.results-container {
+>>>>>>> afia-branch
     max-width: 1200px;
     margin: 60px auto;
     display: grid;
@@ -288,7 +292,11 @@ body {
     gap: 30px;
     padding: 20px;
     background: transparent;
+<<<<<<< HEAD
 } */
+=======
+}
+>>>>>>> afia-branch
 .suggested_roommate {
     background: var(--card-bg);
     border-radius: 12px;
@@ -503,6 +511,7 @@ body {
 .filter-box .row > .col-md-4 {
     margin-bottom: 12px;
 }
+<<<<<<< HEAD
 .filter-box .row {
     display: flex;          /* Make it a flex row */
     flex-wrap: nowrap;      /* Prevent wrapping to next line */
@@ -631,6 +640,8 @@ body {
         font-size: 0.85rem;
     }
 }
+=======
+>>>>>>> afia-branch
 
 /* Responsive adjustments */
 @media (max-width: 767px) {

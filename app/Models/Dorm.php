@@ -11,6 +11,7 @@ class Dorm extends Model
 
     protected $table = 'dorms';
 
+<<<<<<< HEAD
     protected $fillable = [
         // Foreign key
         'owner_id',
@@ -61,5 +62,33 @@ class Dorm extends Model
         'longitude' => 'decimal:7',
         'dorm_rating' => 'decimal:2',
         'rent' => 'decimal:2',
+=======
+    // Fillable: all columns that we want to mass assign
+    protected $fillable = [
+        'name',
+        'location',
+        'dorm_hotline',
+        'number_of_rooms',
+        'room_types',
+        'owner_id',
+        'gender_preference',
+        'student_only',
+        'expected_marital_status',
+        'facilities',
+        'latitude',
+        'longitude',
+        'dorm_images',
+        'dorm_owner_name',
+        'property_document',
+        'owner_passport',
+    ];
+
+    // Cast JSON columns to array automatically
+    protected $casts = [
+        'room_types' => 'array',
+        'facilities' => 'array',
+        'dorm_images' => 'array',
+        'property_document' => 'array',
+>>>>>>> afia-branch
     ];
 }

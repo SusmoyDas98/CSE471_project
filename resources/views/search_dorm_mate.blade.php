@@ -56,8 +56,13 @@
                     <div class="col-md-4">
                         <label class="form-label">Age</label>
                         <div class="d-flex gap-2">
+<<<<<<< HEAD
                             <input type="number" id="filterAgeMin" class="form-control" placeholder="Min" min="0">
                             <input type="number" id="filterAgeMax" class="form-control" placeholder="Max" min="0">
+=======
+                            <input type="number" id="filterAgeMin" class="form-control" placeholder="Min Age" min="0">
+                            <input type="number" id="filterAgeMax" class="form-control" placeholder="Max Age" min="0">
+>>>>>>> afia-branch
                         </div>
                     </div>
                 
@@ -91,6 +96,7 @@
                         @endforelse
                         </select>
                     </div>
+<<<<<<< HEAD
                     <!-- Marital Status Filter -->
                     <div class="col-md-4">
                         <label for="filterMaritalStatus" class="form-label">Marital Status</label>
@@ -105,6 +111,8 @@
                         </select>
                     </div>
 
+=======
+>>>>>>> afia-branch
                 
                 </div>
             

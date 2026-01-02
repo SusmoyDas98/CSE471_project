@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Carbon;
+<<<<<<< HEAD
 use App\Models\User_Model;
+=======
+>>>>>>> afia-branch
 
 class Website_review_controller_api extends Controller
 {
@@ -36,6 +39,7 @@ public function get_reviews(Request $request, $type)
             ->get();
     }
 
+<<<<<<< HEAD
     // Fetch all user IDs from these reviews
     $user_ids = $reviews->pluck('user_id')->unique();
 
@@ -48,6 +52,8 @@ public function get_reviews(Request $request, $type)
         return $review;
     });
 
+=======
+>>>>>>> afia-branch
     return response()->json([
         'status'  => true,
         'reviews' => $reviews
@@ -68,7 +74,11 @@ public function get_reviews(Request $request, $type)
             'rating' => 'required|integer|min:1|max:5',
         ],
     
+<<<<<<< HEAD
          );
+=======
+    );
+>>>>>>> afia-branch
 
         if ($validated_request->fails()) {
             return response()->json([
@@ -79,6 +89,7 @@ public function get_reviews(Request $request, $type)
         }
 
 
+<<<<<<< HEAD
             $user_id = 1    ; // or auth()->id() if dynamic
             $user_name = User_Model::find($user_id)->name;
 
@@ -89,6 +100,14 @@ public function get_reviews(Request $request, $type)
                 'rating' => $request->rating,
             ]);
             $add_review->username = $user_name;
+=======
+        $add_review = Website_Reviews::create([
+            'user_id' => "19",
+            'user_name' => "Sakura Haruno",
+            'message' => $request->review_text,
+            'rating' => $request->rating,
+        ]);
+>>>>>>> afia-branch
 
         return response()->json([
                 'status' => true,
@@ -115,7 +134,11 @@ public function get_reviews(Request $request, $type)
                 );
         }
         $review->label = $label;
+<<<<<<< HEAD
         $review->label_markerd_at = Carbon::now();
+=======
+        $review->labeled_at = Carbon::now();
+>>>>>>> afia-branch
         $review->save();
         return  response()->json([
             'status' => true,

@@ -1,9 +1,13 @@
 <?php
+<<<<<<< HEAD
 
+=======
+>>>>>>> afia-branch
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+<<<<<<< HEAD
 return new class extends Migration
 {
     public function up(): void
@@ -30,3 +34,23 @@ return new class extends Migration
         Schema::dropIfExists('users');
     }
 };
+=======
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->enum('role', ['Dorm Seeker','Dorm Owner']);
+            $table->enum('subscription_type', ['Free','Paid'])->default('Free');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void {
+        Schema::dropIfExists('users');
+    }
+};
+
+>>>>>>> afia-branch

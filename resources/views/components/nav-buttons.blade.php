@@ -1,4 +1,10 @@
 <style>
+:root {
+    --primary: #0ea5e9;
+    --secondary: #3b82f6;
+    --text-secondary: #6b7280;
+}
+
 .navbar {
     background: rgba(255,255,255,0.95);
     backdrop-filter: blur(15px);
@@ -31,6 +37,7 @@
 .nav-links a:hover {
     color: var(--primary);
 }
+
 .btn-upgrade {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
     color: white;
@@ -41,29 +48,6 @@
     font-size: 0.9rem;
     box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
 }        
-.navbar-brand i {
-    color: var(--primary);
-    font-size: 2rem;
-}
-
-.navbar-brand .brand-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-}
-
-.navbar-brand .brand-main {
-    font-size: 1.8rem;
-}
-
-.navbar-brand .brand-sub {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--primary);
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-}
 
 .btn-registered {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -81,16 +65,113 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 24px rgba(14, 165, 233, 0.35);
 }
+
+/* 🔴 Logout styling (NEW) */
+.logout-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-weight: 500;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s, text-shadow 0.2s;
+}
+
+.logout-btn:hover {
+    color: #dc2626;
+    text-shadow: 0 0 0.5px currentColor;
+}
+
+/* Notification Bell */
+.notification-bell {
+    position: relative;
+    color: var(--text-secondary);
+    font-size: 1.3rem;
+    transition: color 0.2s;
+    text-decoration: none;
+}
+
+.notification-bell:hover {
+    color: var(--primary);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+.notification-badge.hidden {
+    display: none;
+}
+
 </style>
 
 <div class="nav-links">
-                <a href="#">Dashboard</a>
-                <a href="#">My Profile</a>
-                <a href="#">Messages</a>
-                <button class="btn-upgrade">
-                    <i class="fas fa-crown me-2"></i>Upgrade Plan
-                </button>
-                <button class="btn btn-registered">
-                    <i class="fas fa-list-ul me-2"></i>Browse Properties
-                </button>                
+    <a href="#">Dashboard</a>
+    <a href="{{ route('dorms.search') }}">Search Dorms</a>
+    <a href="{{ route('dashboard') }}">My Profile</a>
+    <a href="#">Messages</a>
+
+      @auth
+        <a href="{{ route('notifications.index') }}" class="notification-bell">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge hidden" id="notificationBadge">0</span>
+        </a>
+    @endauth
+      
+    <button class="btn-upgrade">
+        <i class="fas fa-crown me-2"></i>Upgrade Plan
+    </button>
+
+    <button class="btn btn-registered">
+        <i class="fas fa-list-ul me-2"></i>Browse Properties
+    </button>
+
+    <!-- 🔴 Logout (NEW) -->
+    @auth
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="logout-btn">
+            Logout
+        </button>
+    </form>
+    @endauth
 </div>
+
+@auth
+<script>
+    // Update notification count
+    function updateNotificationCount() {
+        fetch('{{ route('notifications.unreadCount') }}')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('notificationBadge');
+                if (data.count > 0) {
+                    badge.textContent = data.count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            })
+            .catch(error => console.error('Error fetching notification count:', error));
+    }
+
+    // Update count on page load
+    updateNotificationCount();
+
+    // Update count every 2 seconds
+    setInterval(updateNotificationCount, 2000);
+</script>
+@endauth

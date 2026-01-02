@@ -15,6 +15,7 @@ class AutoSuggestionController extends Controller
     public function index()
     {
         //
+<<<<<<< HEAD
         $user_id = 1;
         $all_dorms = Dorm::select("id",'name', 'location')->get();
         $genders = ['Male', 'Female'];
@@ -24,6 +25,16 @@ class AutoSuggestionController extends Controller
             "all_dorms"=>$all_dorms,
             "genders"=>$genders,
             "marital_status"=> $marital_status
+=======
+        $user_id = 12;
+        $all_dorms = Dorm::select("id",'name', 'location')->get();
+        $genders = ['Male', 'Female'];
+        
+        return view("search_dorm_mate", [
+            "user_id"=>$user_id,
+            "all_dorms"=>$all_dorms,
+            "genders"=>$genders
+>>>>>>> afia-branch
         ]);
     }
 

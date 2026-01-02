@@ -1,4 +1,3 @@
-
 // File name display for single file uploads
 function displayFileName(inputId, displayId) {
     const input = document.getElementById(inputId);
@@ -11,6 +10,21 @@ function displayFileName(inputId, displayId) {
     });
 }
 
+<<<<<<< HEAD
+// File name display for single file uploads
+function displayFileName(inputId, displayId) {
+    const input = document.getElementById(inputId);
+    const display = document.getElementById(displayId);
+    
+    input.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            display.textContent = '✓ ' + this.files[0].name;
+        }
+    });
+}
+
+=======
+>>>>>>> afia-branch
 displayFileName('nationalId', 'nationalIdName');
 displayFileName('passport', 'passportName');
 displayFileName('ownership', 'ownershipName');
@@ -129,6 +143,7 @@ document.getElementById('dormRegistrationForm').addEventListener('submit', funct
     }
 });
 
+<<<<<<< HEAD
 // map functionality using Leaflet.js
 
 var map = L.map('map');
@@ -136,11 +151,20 @@ setTimeout(function () { map.invalidateSize(); }, 200);
 
 map.setView([23.807859221461392, 90.42861728673599], 10);
 
+=======
+var map = L.map('map');
+setTimeout(function () {
+    map.invalidateSize();
+}, 200);
+
+map.setView([23.807859221461392, 90.42861728673599], 10);
+>>>>>>> afia-branch
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+<<<<<<< HEAD
 let marker;
 
 function placeMarker(latlng){
@@ -167,10 +191,31 @@ function placeMarker(latlng){
 }
 
 // Click on map to place marker
+=======
+//the map marker
+
+let marker ;
+function placeMarker(latlng){
+    if(marker){
+        marker.setLatLng(latlng);
+    }
+    else{
+        marker = L.marker(latlng).addTo(map);
+    }
+
+    document.getElementById('latitude').value = latlng.lat;
+    document.getElementById('longitude').value = latlng.lng;
+
+    // console.log("Latitude:", document.getElementById('latitude').value);
+    // console.log("Longitude:", document.getElementById('longitude').value);    
+}
+
+>>>>>>> afia-branch
 map.on('click', function(e){
     placeMarker(e.latlng);
 });
 
+<<<<<<< HEAD
 
 // GOOGLE MAPS LINK FUNCTIONALITY
 function Fetch_location_from_link(){
@@ -181,12 +226,24 @@ function Fetch_location_from_link(){
     var start_loc = given_link.indexOf("@");
     if(start_loc === -1) return; 
 
+=======
+function Fetch_location_from_link(){
+    var map_link_given = document.getElementById("dorm_location_on_map").value;
+    if (!map_link_given){
+        return ;
+    }
+    var given_link = String(map_link_given);
+
+    var start_loc = given_link.indexOf("@");
+    if(start_loc === -1) return; 
+>>>>>>> afia-branch
     var start_from = start_loc+1;
     var shrinked_link = given_link.slice(start_from);
     var parts = shrinked_link.split(",");
     var lat = parseFloat(parts[0]);
     var lng = parseFloat(parts[1]);
     if(isNaN(lat) || isNaN(lng)) return; 
+<<<<<<< HEAD
     console.log("Marker placed at: ", lat, lng);
 
     placeMarker({lat: lat, lng: lng});
@@ -219,3 +276,12 @@ function fetchAddress(lat, lng){
             document.getElementById('dormAddress').value = '';
         });
 }
+=======
+    placeMarker({lat: lat, lng : lng});
+    map.setView([lat, lng], 15);
+
+    // console.log("Latitude:", document.getElementById('latitude').value);
+    // console.log("Longitude:", document.getElementById('longitude').value);    
+}
+    // Log the updated values
+>>>>>>> afia-branch

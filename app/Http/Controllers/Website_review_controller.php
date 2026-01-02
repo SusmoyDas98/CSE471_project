@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Website_Reviews;
+<<<<<<< HEAD
 use App\Models\User_Model;
+=======
+
+>>>>>>> afia-branch
 use function PHPUnit\Framework\isEmpty;
 
 class Website_review_controller extends Controller
@@ -18,10 +22,13 @@ class Website_review_controller extends Controller
         //
         $user_role = "Admin";
         $all_reviews = Website_Reviews::orderBy('created_at', 'desc')->get();
+<<<<<<< HEAD
         $user_ids = $all_reviews->pluck('user_id')->unique();
         $user_map = User_Model::whereIn('id', $user_ids) ->pluck('name', 'id');
         // dd($user_map);
          // $user_map is now [id => name]        
+=======
+>>>>>>> afia-branch
         $vissible_reviews = $all_reviews->whereNotIn('label', ['Hidden', "Deleted"]);
         $total_reviews = $all_reviews->count();
         $hidden_reviews = $all_reviews->where('label', 'Hidden')->pluck('id')->toArray();
@@ -30,6 +37,7 @@ class Website_review_controller extends Controller
         // $total_deleted_reviews = $deleted_reviews->count();
         $average_rating = round($all_reviews->avg('rating'),2);
         if ($user_role == "Admin") {
+<<<<<<< HEAD
             return view("website_feedback_admin_view", ['all_reviews'=>$all_reviews, 'user_role'=>$user_role, 'total_reviews'=>$total_reviews, 'hidden_reviews'=>$hidden_reviews, 'deleted_reviews'=>$deleted_reviews, 'average_rating'=>$average_rating,  'user_map'=>$user_map]);
         }
         $user_id = 1;
@@ -38,6 +46,16 @@ class Website_review_controller extends Controller
         }
         else{
             return view("website_feedback", [ 'user_role'=>$user_role,'all_reviews'=>$vissible_reviews,'user_map'=>$user_map]); 
+=======
+            return view("website_feedback_admin_view", ['all_reviews'=>$all_reviews, 'user_role'=>$user_role, 'total_reviews'=>$total_reviews, 'hidden_reviews'=>$hidden_reviews, 'deleted_reviews'=>$deleted_reviews, 'average_rating'=>$average_rating]);
+        }
+        $user_id = 19;
+        if (Website_Reviews::where('user_id', $user_id)->exists()) {
+            return view("website_feedback", [ 'user_role'=>$user_role,'already_have'=> 'You have already submitted a review. Thank you for your Participation 😃!','all_reviews'=>$vissible_reviews,'total_reviews'=>$total_reviews, 'hidden_reviews'=>$hidden_reviews, 'deleted_reviews'=>$deleted_reviews, 'average_rating'=>$average_rating]);
+        }
+        else{
+            return view("website_feedback", [ 'user_role'=>$user_role,'all_reviews'=>$vissible_reviews]); 
+>>>>>>> afia-branch
         }
        }
 
