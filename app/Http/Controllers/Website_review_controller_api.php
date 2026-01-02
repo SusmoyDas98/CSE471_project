@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Carbon;
+use App\Models\User_Model;
 
 class Website_review_controller_api extends Controller
 {
@@ -35,6 +36,18 @@ public function get_reviews(Request $request, $type)
             ->get();
     }
 
+    // Fetch all user IDs from these reviews
+    $user_ids = $reviews->pluck('user_id')->unique();
+
+    // Create id => name map
+    $user_map = User_Model::whereIn('id', $user_ids)->pluck('name', 'id');
+
+    // Append username to each review object
+    $reviews->map(function ($review) use ($user_map) {
+        $review->username = $user_map[(int)$review->user_id] ?? 'Unknown';
+        return $review;
+    });
+
     return response()->json([
         'status'  => true,
         'reviews' => $reviews
@@ -55,7 +68,7 @@ public function get_reviews(Request $request, $type)
             'rating' => 'required|integer|min:1|max:5',
         ],
     
-    );
+         );
 
         if ($validated_request->fails()) {
             return response()->json([
@@ -66,12 +79,16 @@ public function get_reviews(Request $request, $type)
         }
 
 
-        $add_review = Website_Reviews::create([
-            'user_id' => "19",
-            'user_name' => "Sakura Haruno",
-            'message' => $request->review_text,
-            'rating' => $request->rating,
-        ]);
+            $user_id = 1    ; // or auth()->id() if dynamic
+            $user_name = User_Model::find($user_id)->name;
+
+            $add_review = Website_Reviews::create([
+                'user_id' => $user_id,
+                // 'user_name' => $user_name,
+                'message' => $request->review_text,
+                'rating' => $request->rating,
+            ]);
+            $add_review->username = $user_name;
 
         return response()->json([
                 'status' => true,
@@ -98,7 +115,7 @@ public function get_reviews(Request $request, $type)
                 );
         }
         $review->label = $label;
-        $review->labeled_at = Carbon::now();
+        $review->label_markerd_at = Carbon::now();
         $review->save();
         return  response()->json([
             'status' => true,

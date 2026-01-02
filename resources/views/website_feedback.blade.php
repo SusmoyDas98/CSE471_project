@@ -25,42 +25,46 @@
 
 <div class="container-main">
     <div class="feedback-container">
-
-        <div class="write-review-section">
-            @if (  session('success') )
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-                
-            @else 
-            <h3>Write a Review</h3>
-            <p>Share your experience with DormLuxe</p>
-            <form id="reviewForm" action="/website_reviews" method="POST">
-                @csrf
-                <div class="form-group">
-                    <label>Your Rating *</label>
-                    <div class="star-rating" id="starRating">
-                        <i class="fas fa-star star" data-rating="1" tabindex="0"></i>
-                        <i class="fas fa-star star" data-rating="2" tabindex="0"></i>
-                        <i class="fas fa-star star" data-rating="3" tabindex="0"></i>
-                        <i class="fas fa-star star" data-rating="4" tabindex="0"></i>
-                        <i class="fas fa-star star" data-rating="5" tabindex="0"></i>
+            <div class="write-review-section">
+                @if ( !empty($already_have) )
+                    {{-- <div class="alert alert-success"> --}}
+                    <div class="already_have">
+                        {{ $already_have }}
                     </div>
-                    <input type="hidden" id="ratingValue" name="rating" value="0">
-                </div>
 
-                <div class="form-group">
-                    <label for="reviewText">Your Review *</label>
-                    <textarea name = "review_text" class="form-control" id="reviewText" maxlength="500" required placeholder="Tell us about your experience..."></textarea>
-                    <div class="char-count"><span id="charCount">0</span>/500 characters</div>
-                </div>
+                @else 
+                <h3>Write a Review</h3>
+                <p>Share your experience with DormLuxe</p>
+                {{-- <form id="reviewForm" action="/website_reviews" method="POST"> --}}
+                <form id="reviewForm" >
+                    @csrf
+                    <div class="form-group">
+                        <label>Your Rating *</label>
+                        <div class="star-rating" id="starRating">
+                            <i class="fas fa-star star" data-rating="1" tabindex="0"></i>
+                            <i class="fas fa-star star" data-rating="2" tabindex="0"></i>
+                            <i class="fas fa-star star" data-rating="3" tabindex="0"></i>
+                            <i class="fas fa-star star" data-rating="4" tabindex="0"></i>
+                            <i class="fas fa-star star" data-rating="5" tabindex="0"></i>
+                        </div>
+                        <input type="hidden" id="ratingValue" name="rating" value="0">
+                    </div>
 
-                <button type="submit" class="btn-submit-review"><i class="fas fa-paper-plane me-2"></i>Submit Review</button>
-            </form>
-            @endif
-        </div>
+                    <div class="form-group">
+                        <label for="reviewText">Your Review *</label>
+                        <textarea name = "review_text" class="form-control" id="reviewText" maxlength="500" required placeholder="Tell us about your experience..."></textarea>
+                        <div class="char-count"><span id="charCount">0</span>/500 characters</div>
+                    </div>
+
+                    {{-- <button type="submit" class="btn-submit-review"><i class="fas fa-paper-plane me-2"></i>Submit Review</button> --}}
+                    <button type="submit" id = "submit_button" class="btn-submit-review"><i class="fas fa-paper-plane me-2"></i>Submit Review</button>                
+                </form>
+                @endif
+            </div>
+
 
         <div class="reviews-section">
+
             <h3 class='title_all_reviews'>All Reviews</h3>
 
             <div id="reviewsList">
@@ -68,12 +72,14 @@
                     <p>No reviews yet. Be the first to write a review!</p>
                 @else
                 @foreach ($all_reviews as $review)
-                    <div class="review-card" data-rating="5">
+                    <div class="review-card" id = "visible_review-{{ $review->id }}">
+                
                     <div class="review-header">
                         <div class="reviewer-info">
                             <div class="reviewer-avatar">S</div>
                             <div class="reviewer-details">
-                                <h4>{{$review->user_name}}</h4>
+                                <h4>{{ $user_map[(int)$review->user_id] ?? 'Unknown' }}</h4>
+
                             </div>
                         </div>
                         <div class="review-rating">
@@ -87,6 +93,7 @@
                     <p class="review-content">
                         {{$review->message}}
                     </p>
+                                  
                 </div>                         
                     @endforeach
                     

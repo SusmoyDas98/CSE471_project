@@ -14,6 +14,7 @@ Route::get('/user', function (Request $request) {
 // fetch the website reviews
 Route::get('/website_reviews_get/{type}', [Website_review_controller_api::class, 'get_reviews']);
 // submit the website reviews
+Route::post('/website_reviews_post', [Website_review_controller_api::class, 'store']);
 Route::post('/website_reviews_update/{message_id}/{label}', [Website_review_controller_api::class, 'update_label']);
 // fetch the submission infos
 Route::get('/get_submission_infos/{submission_id}',[Dorm_Registration_Controller_api::class, 'show']);
