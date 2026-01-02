@@ -173,43 +173,6 @@ $facilities = array_values($facilities);
 }
 
 
-    // public function approve($id){
-    //     $infos = Dorm_registration_submission::findOrFail($id);
-        
-    //     Dorm::create([
-    //         "owner_id"   => $infos->owner_id,
-    //         "name"       => $infos->dorm_name,
-    //         "dorm_location"   => $infos->dorm_location,	
-    //         "latitude" =>   $infos->latitude,
-    //         "longitude"  => $infos->longitude,            
-    //         "dorm_review"=> 0.0,
-    //         "room_count" => $infos->number_of_rooms,
-    //         "room_types" => is_array($infos->room_types) ? json_encode($infos->room_types) : $infos->room_types,
-    //         "status"     => "approved"
-    //     ]);
-
-    //     $infos->update([
-    //         'status' => 'approved'
-    //     ]);
-
-    //     return redirect()->back()->with(['status'=>'Approved','message'=>'Dorm registration approved successfully.']);
-    // }
-
-
-
-    
-    // public function decline($id){
-    //     // return $dec_id;
-    //     $infos = Dorm_registration_submission::findOrFail($id);
-
-    //     $infos->update(
-    //         ['status' => 'declined'],        );
-        
-    //     return redirect()->back()->with(['status'=>"Declined",'message'=>'Dorm Registration Application Declined successfully.']);
-
-    // }
-
-
     /**
      * Display the specified resource.
      */
