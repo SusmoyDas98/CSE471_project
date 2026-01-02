@@ -1,0 +1,41 @@
+/* Extracted styles for document upload form */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root{--primary:#0ea5e9;--primary-dark:#0284c7;--primary-light:#38bdf8;--secondary:#06b6d4;--accent:#3b82f6;--gold:#fbbf24;--success:#10b981;--bg-main:#f0f9ff;--bg-secondary:#e0f2fe;--card-bg:#ffffff;--text-primary:#0c4a6e;--text-secondary:#075985;--border-color:#bae6fd}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:radial-gradient(circle at 20% 50%, rgba(14,165,233,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(59,130,246,0.08) 0%, transparent 50%), linear-gradient(135deg,#f0f9ff 0%, #e0f2fe 100%);color:var(--text-primary);min-height:100vh}
+.navbar{background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(14,165,233,0.1);padding:24px 0;box-shadow:0 4px 24px rgba(14,165,233,0.08)}
+.navbar-brand{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:30px;align-items:center}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-weight:500}
+.btn-upgrade{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:white;border:none;padding:10px 24px;border-radius:50px;font-weight:600}
+.hero-section{padding:80px 0 40px;text-align:center}
+.hero-badge{display:inline-block;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;padding:8px 24px;border-radius:50px;font-size:0.85rem;font-weight:600;text-transform:uppercase;margin-bottom:24px}
+.hero-title{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:800;color:var(--text-primary);margin-bottom:20px;line-height:1.2}
+.hero-title span{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-subtitle{font-size:1.2rem;color:var(--text-secondary);max-width:700px;margin:0 auto 40px}
+.registration-container{background:white;border-radius:24px;padding:50px;max-width:900px;margin:0 auto 60px;box-shadow:0 20px 60px rgba(14,165,233,0.12);border:2px solid rgba(14,165,233,0.1)}
+.form-header{text-align:center;margin-bottom:40px}
+.form-header h3{font-family:'Playfair Display',serif;font-size:2rem;color:var(--text-primary);margin-bottom:10px}
+.form-label{display:block;color:var(--text-primary);font-weight:600;margin-bottom:10px;font-size:1rem}
+.file-upload-area{border:2px dashed rgba(14,165,233,0.3);border-radius:12px;padding:30px;text-align:center;transition:all 0.3s;cursor:pointer;background:rgba(14,165,233,0.02)}
+.file-upload-area:hover{border-color:var(--primary);background:rgba(14,165,233,0.05)}
+.file-upload-area.dragover{border-color:var(--primary);background:rgba(14,165,233,0.08)}
+.file-upload-icon{font-size:3rem;color:var(--primary);margin-bottom:15px}
+.file-upload-text{color:var(--text-primary);font-weight:600;margin-bottom:5px}
+.file-upload-hint{color:var(--text-secondary);font-size:0.9rem}
+.file-input{display:none}
+.file-preview{display:none;margin-top:15px;padding:15px;background:rgba(16,185,129,0.1);border-radius:10px;border:1px solid rgba(16,185,129,0.3)}
+.file-preview.active{display:flex;align-items:center;justify-content:space-between}
+.file-info{display:flex;align-items:center;gap:12px}
+.file-info i{font-size:1.5rem;color:var(--success)}
+.file-name{color:var(--text-primary);font-weight:600}
+.file-size{color:var(--text-secondary);font-size:0.85rem}
+.remove-file{background:none;border:none;color:#ef4444;cursor:pointer;font-size:1.2rem;padding:5px 10px}
+.form-note{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:15px;margin-top:10px}
+.submit-section{margin-top:40px;text-align:center}
+.btn-submit{background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border:none;padding:16px 60px;border-radius:50px;font-size:1.1rem;font-weight:700}
+.success-message{display:none;background:rgba(16,185,129,0.1);border:2px solid var(--success);border-radius:16px;padding:30px;text-align:center;margin-top:20px}
+.success-message.active{display:block}
+.success-icon{font-size:4rem;color:var(--success);margin-bottom:20px}
+@media (max-width:768px){.hero-title{font-size:2.5rem}.registration-container{padding:30px 20px}.nav-links{flex-direction:column;gap:15px}}

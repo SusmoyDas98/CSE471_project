@@ -19,4 +19,8 @@ return new class extends Migration {
     public function down(): void {
         Schema::dropIfExists('website_reviews');
     }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> d81146069f60673832c6b342aacee5197e68c42b

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DormMate | Chat</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/chat.css') }}">
+</head>
+<body>
+
+    <x-page-header>
+        <x-slot name="nav_links">
+            <x-nav-buttons />
+        </x-slot>
+    </x-page-header>
+
+<div class="chat-container">
+
+    <!-- USERS LIST -->
+    <div class="users-panel">
+        <h4 class="panel-title">
+            <i class="fas fa-users"></i> Users
+        </h4>
+
+        @foreach($users as $user)
+            <a href="{{ route('chat.show', $user->id) }}" class="chat-user">
+                <div class="user-avatar">
+                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ $user->name }}</div>
+                    <small>Tap to chat</small>
+                </div>
+            </a>
+        @endforeach
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div class="chat-panel">
+
+        @if($selectedUser)
+            <!-- HEADER -->
+            <div class="chat-header">
+                <div class="chat-header-avatar">
+                    {{ strtoupper(substr($selectedUser->name, 0, 1)) }}
+                </div>
+                <div>
+                    <h5>{{ $selectedUser->name }}</h5>
+                    <small class="status">Online</small>
+                </div>
+            </div>
+
+            <!-- MESSAGE AREA (SCROLLS) -->
+            <div class="chat-messages" id="chatMessages">
+                @foreach($messages as $message)
+                    @php $isMe = $message->sender_id == $authUserId; @endphp
+
+                    <div class="chat-row {{ $isMe ? 'me' : 'them' }}">
+                        <div class="chat-bubble {{ $isMe ? 'me' : 'them' }}">
+                            <p>{{ $message->message }}</p>
+                            <span class="chat-time">
+                                {{ \Carbon\Carbon::parse($message->sent_at)->format('h:i A') }}
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- INPUT -->
+            <form class="chat-input" onsubmit="sendMessage(event)">
+                @csrf
+                <input type="hidden" name="receiver_id" value="{{ $selectedUser->id }}">
+                <input type="text" name="message" placeholder="Type your message..." required>
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+
+        @else
+            <div class="chat-empty">
+                <i class="fas fa-comments"></i>
+                <h3>Select a user to start chatting</h3>
+                <p>Choose a user from the left panel</p>
+            </div>
+        @endif
+
+    </div>
+</div>
+
+<script>
+    const authUserId = {{ $authUserId }};
+    const selectedUserId = {{ $selectedUser ? $selectedUser->id : 'null' }};
+    const chatBox = document.getElementById('chatMessages');
+
+    function scrollToBottom() {
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    function renderMessages(messages) {
+        if (!chatBox) return;
+
+        chatBox.innerHTML = '';
+
+        messages.forEach(msg => {
+            const isMe = msg.sender_id == authUserId;
+
+            const row = document.createElement('div');
+            row.className = 'chat-row ' + (isMe ? 'me' : 'them');
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble ' + (isMe ? 'me' : 'them');
+
+            bubble.innerHTML = `
+                <p>${msg.message}</p>
+                <span class="chat-time">
+                    ${new Date(msg.sent_at).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}
+                </span>
+            `;
+
+            row.appendChild(bubble);
+            chatBox.appendChild(row);
+        });
+
+        scrollToBottom();
+    }
+
+    function fetchMessages() {
+        if (!selectedUserId) return;
+
+        fetch(`/chat/messages/${selectedUserId}`)
+            .then(response => response.json())
+            .then(data => renderMessages(data))
+            .catch(error => console.error(error));
+    }
+
+    function sendMessage(e) {
+        e.preventDefault();
+
+        const input = document.querySelector('input[name="message"]');
+        const message = input.value.trim();
+        if (!message) return;
+
+        fetch("{{ route('chat.send') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                receiver_id: selectedUserId,
+                message: message
+            })
+        }).then(() => {
+            input.value = '';
+            fetchMessages(); // instant refresh after sending
+        });
+    }
+
+    // Start polling every 2 seconds
+    if (selectedUserId) {
+        fetchMessages();
+        setInterval(fetchMessages, 2000);
+    }
+</script>
+
+
+
+
+</body>
+</html>
